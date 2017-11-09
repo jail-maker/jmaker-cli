@@ -1,0 +1,24 @@
+{
+    "name": "jmaker-cli",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jail-maker/jmaker-cli.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jail-maker/jmaker-cli/issues"
+    },
+    "homepage": "https://github.com/jail-maker/jmaker-cli#readme",
+    "dependencies": {
+        "js-yaml": "^3.9.0",
+        "minimist": "^1.2.0",
+        "request": "^2.83.0"
+    }
+}

@@ -1,0 +1,32 @@
+---
+name: "default"
+base: "freebsd-11.0"
+ip4.addr:
+  - "lo0|127.0.0.1/24"
+  - "lo0|127.0.0.2/24"
+
+ip6.addr:
+  - 'auto'
+
+cpuset: '0'
+
+rctl:
+  pcpu: {deny: '20'}
+
+  readiops: {deny: '3000'}
+
+
+dependencies:
+  php: 5.6
+  apache: 2.4
+  sqlite: 3
+  mysql: 5.6
+
+env:
+  dev:
+    name: "dev"
+    base: "freebsd-10.3"
+
+  prod:
+    ip4.addr:
+      - 'lo0|192.168.0.2/24'

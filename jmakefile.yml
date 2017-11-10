@@ -1,6 +1,6 @@
 ---
 name: "default"
-base: "freebsd-11.0"
+base: "freebsd-11.1"
 ip4.addr:
   - "lo0|127.0.0.1/24"
   - "lo0|127.0.0.2/24"
@@ -8,13 +8,13 @@ ip4.addr:
 ip6.addr:
   - 'auto'
 
+exec.start: "/bin/sh /etc/rc"
+
 cpuset: '0'
 
 rctl:
   pcpu: {deny: '20'}
-
   readiops: {deny: '3000'}
-
 
 dependencies:
   php: 5.6

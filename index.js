@@ -49,11 +49,11 @@ switch (command) {
     case 'start':
         request({
             method: 'POST',
-            uri: `${host}:${port}/`,
-            multipart: [{
-                'Content-type': 'application/json',
-                body: JSON.stringify(configData)
-            }]
+            uri: `${host}:${port}/jails`,
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(configData),
         }, (error, response, body) => {
 
             console.log(error, response, body);

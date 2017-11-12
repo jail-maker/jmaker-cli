@@ -8,8 +8,6 @@ ip4.addr:
 ip6.addr:
   - 'auto'
 
-exec.start: "/bin/sh /etc/rc"
-
 cpuset: '0'
 
 rctl:

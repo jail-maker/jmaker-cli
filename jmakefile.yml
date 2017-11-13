@@ -1,12 +1,13 @@
 ---
-name: "default"
+name: "test-jail"
 base: "freebsd-11.1"
 ip4.addr:
-  - "lo0|127.0.0.1/24"
-  - "lo0|127.0.0.2/24"
+  - "alc0|192.168.0.33/24"
+  - "alc0|192.168.0.34/24"
 
-ip6.addr:
-  - 'auto'
+mounts:
+  - ['./', '/usr/local/www/apache24/data']
+  - ['/mnt', '/mnt']
 
 cpuset: '0'
 
@@ -22,7 +23,6 @@ dependencies:
 
 env:
   dev:
-    name: "dev"
     base: "freebsd-10.3"
 
   prod:

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const path = require('path');
 const yaml = require('js-yaml');
 const minimist = require('minimist');
 const request = require('request');
@@ -28,8 +29,13 @@ var configData = {};
 
 try {
 
-    let buffer = fs.readFileSync(`${CWD}/${configFile}`, 'utf8');
+    let buffer = fs.readFileSync(__dirname + '/defaults.yml', 'utf8');
+    defaults = yaml.safeLoad(buffer);
+
+    buffer = fs.readFileSync(`${CWD}/${configFile}`, 'utf8');
     configData = yaml.safeLoad(buffer);
+
+    Object.assign(configData, defaults);
 
 } catch (e) {
 
@@ -43,6 +49,14 @@ delete(configData.env);
 
 Object.assign(configData, envData[env]);
 console.log(configData);
+
+let mounts = configData.mounts.map(points => {
+
+    return [path.resolve(points[0]), points[1]];
+
+});
+
+configData.mounts = mounts;
 
 switch (command) {
 
@@ -62,6 +76,16 @@ switch (command) {
         break;
 
     case 'stop':
+
+        request({
+            method: 'DELETE',
+            uri: `${host}:${port}/jails/${configData.name}`,
+        }, (error, response, body) => {
+
+            console.log(error, response, body);
+
+        });
+
         break;
 
     case 'refresh':

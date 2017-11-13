@@ -1,0 +1,11 @@
+---
+
+mount.devfs: true
+allow.raw_sockets: true
+allow.socket_af: true
+host.hostname: "${name}"
+exec.start: "/bin/sh /etc/rc"
+exec.stop: "/bin/sh /etc/rc.shutdown"
+sysvsem: true
+sysvshm: true
+mounts: []

@@ -2,18 +2,18 @@
 name: "test-jail"
 base: "freebsd-11.1"
 ip4.addr:
-  - "alc0|192.168.0.33/24"
-  - "alc0|192.168.0.34/24"
+  - "wlan0|192.168.0.33/24"
+  - "wlan0|192.168.0.34/24"
 
 mounts:
-  - ['/mnt', '/mnt']
-  - ['./', '/usr/local/www/apache24/data']
+  - ['./', '/mnt']
 
 cpuset: '0'
 
 rctl:
   pcpu: {deny: '20'}
-  readiops: {deny: '3000'}
+  readiops: {throttle: '500'}
+  vmemoryuse: {deny: '128M'}
 
 dependencies:
   php: 5.6

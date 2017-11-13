@@ -35,7 +35,7 @@ try {
     buffer = fs.readFileSync(`${CWD}/${configFile}`, 'utf8');
     configData = yaml.safeLoad(buffer);
 
-    Object.assign(configData, defaults);
+    configData = Object.assign(defaults, configData);
 
 } catch (e) {
 

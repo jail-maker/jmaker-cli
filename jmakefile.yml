@@ -6,8 +6,8 @@ ip4.addr:
   - "alc0|192.168.0.34/24"
 
 mounts:
-  - ['./', '/usr/local/www/apache24/data']
   - ['/mnt', '/mnt']
+  - ['./', '/usr/local/www/apache24/data']
 
 cpuset: '0'
 

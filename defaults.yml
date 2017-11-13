@@ -9,3 +9,4 @@ exec.stop: "/bin/sh /etc/rc.shutdown"
 sysvsem: true
 sysvshm: true
 mounts: []
+rctl: {}

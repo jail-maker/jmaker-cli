@@ -23,7 +23,7 @@ dependencies:
 
 env:
   dev:
-    base: "freebsd-10.3"
+    ip4.addr: "DHCP"
 
   prod:
     ip4.addr:

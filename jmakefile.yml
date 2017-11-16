@@ -5,25 +5,13 @@ ip4.addr:
   - "alc0|192.168.0.33/24"
   - "alc0|192.168.0.34/24"
 
-mounts:
-  - ['./', '/mnt']
-
-cpuset: '0'
-
-rctl:
-  pcpu: {deny: '80'}
-
-dependencies:
-  php: 5.6
-  apache: 2.4
-  sqlite: 3
-  mysql: 5.6
-
 env:
   dev:
     ip4.addr: "DHCP"
 
+  auto:
+    ip4.addr: "AUTO"
+
   prod:
     ip4.addr:
-      - 'lo0|192.168.0.2/24'
-      - '?|192.168.0.2/24'
+      - '?|192.168.0.33/24'

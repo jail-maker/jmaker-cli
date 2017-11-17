@@ -4,19 +4,12 @@ base: "freebsd-11.1"
 ip4.addr:
   - "?|192.168.0.33/24"
 
-mounts:
-  - ['./', '/mnt']
-
-exec.start:
-  - "/bin/sh /etc/rc"
-  - "/mnt/cpconfigs.sh"
-
 pkg:
   - "apache24"
-  - "php70"
+  - "php56"
 
-dependencies:
-  - "web-layer"
+exec.j-poststart:
+  - "service apache24 onestart"
 
 env:
   dhcp:

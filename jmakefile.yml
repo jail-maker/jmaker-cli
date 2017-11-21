@@ -7,9 +7,7 @@ ip4.addr:
 pkg:
   - "apache24"
   - "php56"
-
-exec.j-poststart:
-  - "service apache24 onestart"
+  - "mc"
 
 env:
   dhcp:

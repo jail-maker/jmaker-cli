@@ -70,7 +70,7 @@ switch (command) {
             body: JSON.stringify(configData),
         }, (error, response, body) => {
 
-            console.log(error, response, body);
+            console.log(error);
 
         });
         break;
@@ -82,7 +82,7 @@ switch (command) {
             uri: `${host}:${port}/jails/${configData.name}`,
         }, (error, response, body) => {
 
-            console.log(error, response, body);
+            console.log(error);
 
         });
 

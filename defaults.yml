@@ -9,6 +9,7 @@ exec.stop: "/bin/sh /etc/rc.shutdown"
 sysvsem: true
 sysvshm: true
 dependencies: {}
+quota: false
 mounts: []
 pkg: []
 rctl: {}

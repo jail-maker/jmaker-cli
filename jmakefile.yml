@@ -6,6 +6,9 @@ ip4.addr:
 
 quota: "2g"
 
+mounts:
+  - ['./', '/mnt']
+
 pkg:
   - "apache24"
   - "php56"

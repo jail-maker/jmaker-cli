@@ -6,6 +6,8 @@ const yaml = require('js-yaml');
 const minimist = require('minimist');
 const request = require('request');
 
+const stream = require('stream');
+
 const ARGV = minimist(process.argv.slice(2));
 const CWD = process.cwd();
 
@@ -61,6 +63,7 @@ configData.mounts = mounts;
 switch (command) {
 
     case 'start':
+
         request({
             method: 'POST',
             uri: `${host}:${port}/jails`,
@@ -73,9 +76,16 @@ switch (command) {
             console.log(error);
 
         });
+
+        request(`${host}:${port}/jails/${configData.name}/log-stream`)
+            .pipe(process.stdout);
+
         break;
 
     case 'stop':
+
+        request(`${host}:${port}/jails/${configData.name}/log-stream`)
+            .pipe(process.stdout);
 
         request({
             method: 'DELETE',

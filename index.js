@@ -64,6 +64,9 @@ switch (command) {
 
     case 'start':
 
+        request(`${host}:${port}/jails/${configData.name}/log-stream`)
+            .pipe(process.stdout);
+
         request({
             method: 'POST',
             uri: `${host}:${port}/jails`,
@@ -76,9 +79,6 @@ switch (command) {
             console.log(error);
 
         });
-
-        request(`${host}:${port}/jails/${configData.name}/log-stream`)
-            .pipe(process.stdout);
 
         break;
 

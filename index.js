@@ -5,8 +5,8 @@ const path = require('path');
 const yaml = require('js-yaml');
 const minimist = require('minimist');
 const request = require('request');
-
-const stream = require('stream');
+const chalk = require('chalk');
+const log = console.log;
 
 const ARGV = minimist(process.argv.slice(2));
 const CWD = process.cwd();

@@ -17,6 +17,7 @@
     },
     "homepage": "https://github.com/jail-maker/jmaker-cli#readme",
     "dependencies": {
+        "chalk": "^2.3.0",
         "js-yaml": "^3.9.0",
         "minimist": "^1.2.0",
         "request": "^2.83.0"

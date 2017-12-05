@@ -10,9 +10,9 @@ mounts:
   - ['./', '/mnt']
 
 pkg:
-  # - "apache24"
-  # - "php56"
-  # - "mc"
+  - "apache24"
+  - "php56"
+  - "mc"
 
 env:
   dhcp:

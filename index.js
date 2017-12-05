@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -12,8 +14,6 @@ const log = console.log;
 
 const ARGV = minimist(process.argv.slice(2));
 const CWD = process.cwd();
-
-console.dir(ARGV);
 
 let {
 
@@ -34,7 +34,7 @@ var configData = {};
 try {
 
     let buffer = fs.readFileSync(__dirname + '/defaults.yml', 'utf8');
-    defaults = yaml.safeLoad(buffer);
+    let defaults = yaml.safeLoad(buffer);
 
     buffer = fs.readFileSync(`${CWD}/${configFile}`, 'utf8');
     configData = yaml.safeLoad(buffer);
@@ -52,7 +52,6 @@ let envData = configData.env;
 delete(configData.env);
 
 Object.assign(configData, envData[env]);
-console.log(configData);
 
 let mounts = configData.mounts.map(points => {
 
@@ -62,18 +61,37 @@ let mounts = configData.mounts.map(points => {
 
 configData.mounts = mounts;
 
-switch (command) {
+function logHandler(data) {
 
-    case 'start':
+    let {
+        level,
+        text
+    } = JSON.parse(data);
 
-        let addr = url.parse(host);
-        // const ws = new WebSocket(`ws://${addr.host}:${port}/`);
-        const ws = new WebSocket(`ws://${addr.host}:8080/`);
+    switch (level) {
 
-        ws.on('open', _ => {
+        case 3:
+            text = chalk.green(text);
+            break;
 
-            console.log('connected');
-            ws.send(configData.name);
+        case 2:
+            text = chalk.yellow(text);
+            break;
+
+        case 1:
+            text = chalk.red(text);
+            break;
+
+    }
+
+    console.log(text);
+
+}
+
+function sendCommand() {
+    switch (command) {
+
+        case 'start':
 
             request({
                 method: 'POST',
@@ -84,62 +102,46 @@ switch (command) {
                 body: JSON.stringify(configData),
             }, (error, response, body) => {
 
-                console.log(error);
-                // process.exit();
+                // console.log(error);
 
             });
-        });
 
-        ws.on('close', _ => console.log('disconnected'));
+            break;
 
-        ws.on('message', data => {
+        case 'stop':
 
-            let {
-                level,
-                text
-            } = JSON.parse(data);
+            request({
+                method: 'DELETE',
+                uri: `${host}:${port}/jails/${configData.name}`,
+            }, (error, response, body) => {
 
-            switch (level) {
+                // console.log(error);
 
-                case 'notice':
-                    text = chalk.green(text);
-                    break;
+            });
 
-                case 'warn':
-                    text = chalk.yellow(text);
-                    break;
+            break;
 
-                case 'crit':
-                    text = chalk.red(text);
-                    break;
+        case 'refresh':
+            break;
 
-            }
+        default:
+            break;
 
-            console.log(text);
-
-        });
-
-
-        break;
-
-    case 'stop':
-
-        request({
-            method: 'DELETE',
-            uri: `${host}:${port}/jails/${configData.name}`,
-        }, (error, response, body) => {
-
-            console.log(error);
-
-        });
-
-        break;
-
-    case 'refresh':
-        break;
-
-    default:
-        break;
+    }
 
 }
+
+let addr = url.parse(host);
+const ws = new WebSocket(`ws://${addr.host}:8080/`);
+
+ws.on('open', _ => {
+
+    console.log('connected');
+    ws.send(configData.name);
+    sendCommand(command);
+
+});
+
+ws.on('message', logHandler);
+ws.on('close', _ => console.log('disconnected'));
 

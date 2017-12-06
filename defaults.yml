@@ -6,6 +6,8 @@ allow.socket_af: true
 host.hostname: "${name}"
 exec.start: "/bin/sh /etc/rc"
 exec.stop: "/bin/sh /etc/rc.shutdown"
+ip4.addr: []
+ip6.addr: []
 sysvsem: true
 sysvshm: true
 dependencies: {}

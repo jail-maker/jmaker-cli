@@ -2,7 +2,10 @@
 name: "test-jail"
 base: "freebsd-11.1"
 ip4.addr:
+  - "alc0|192.168.0.32/24"
   - "?|192.168.0.33/24"
+  - "dhcp"
+  - "auto"
 
 quota: "2g"
 
@@ -16,7 +19,7 @@ pkg:
 
 env:
   dhcp:
-    ip4.addr: "DHCP"
+    ip4.addr: "dhcp"
 
   auto:
-    ip4.addr: "AUTO"
+    ip4.addr: "auto"

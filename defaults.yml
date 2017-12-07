@@ -16,5 +16,5 @@ mounts: []
 pkg: []
 rctl: {}
 cpuset: false
-env: {}
+profile: {}
 exec.j-poststart: []

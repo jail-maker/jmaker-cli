@@ -8,7 +8,7 @@ ip4.addr:
 quota: "2g"
 
 mounts:
-  - ['./', '/mnt']
+  - ['./', '/mnt/project']
 
 pkg:
   - "apache24"

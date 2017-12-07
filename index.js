@@ -20,11 +20,11 @@ let {
     port = 3346,
     host = 'http://127.0.0.1',
     config = 'jmakefile.yml',
-    env = undefined
+    profile = undefined
 
 } = ARGV;
 
-if (!env) env = process.env['JMAKER_ENV'];
+if (!profile) profile = process.env['JMAKER_PROFILE'];
 
 let configFile = config;
 let command = ARGV._[0];
@@ -48,10 +48,10 @@ try {
 
 }
 
-let envData = configData.env;
-delete(configData.env);
+let profileData = configData.profile;
+delete(configData.profile);
 
-Object.assign(configData, envData[env]);
+Object.assign(configData, profileData[profile]);
 
 let mounts = configData.mounts.map(points => {
 

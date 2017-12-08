@@ -5,6 +5,9 @@ ip4.addr:
   - "?|192.168.0.33/24"
   - "auto"
 
+ip6.addr:
+  - "auto"
+
 quota: "2g"
 
 mounts:

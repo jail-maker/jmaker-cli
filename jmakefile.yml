@@ -14,9 +14,7 @@ mounts:
   - ['./', '/mnt/project']
 
 pkg:
-  - "apache24"
-  - "php56"
-  - "mc"
+  - "pkg"
 
 profile:
   dhcp:

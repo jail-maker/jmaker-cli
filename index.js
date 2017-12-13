@@ -84,7 +84,8 @@ function logHandler(data) {
 
     }
 
-    console.log(text);
+    let stream = process.stdout;
+    stream.write(text);
 
 }
 

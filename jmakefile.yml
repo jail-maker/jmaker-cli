@@ -2,16 +2,16 @@
 name: "test-jail"
 base: "freebsd-11.1"
 ip4.addr:
-  - "?|192.168.0.33/24"
   - "auto"
 
 ip6.addr:
   - "auto"
 
 quota: "2g"
+cpus: 5
 
 mounts:
-  - ['./', '/mnt/project']
+  - ["./", "/mnt/project"]
 
 pkg:
   - "pkg"

@@ -133,7 +133,7 @@ function sendCommand() {
 }
 
 let addr = url.parse(host);
-const ws = new WebSocket(`ws://${addr.host}:8080/`);
+const ws = new WebSocket(`ws://${addr.host}:3347/`);
 
 ws.on('open', _ => {
 

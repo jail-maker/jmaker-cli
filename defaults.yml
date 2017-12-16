@@ -15,6 +15,7 @@ quota: false
 mounts: []
 pkg: []
 rctl: {}
+cpus: false
 cpuset: false
 profile: {}
 exec.j-poststart: []

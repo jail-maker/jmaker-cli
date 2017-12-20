@@ -103,7 +103,13 @@ function sendCommand() {
                 body: JSON.stringify(configData),
             }, (error, response, body) => {
 
-                // console.log(error);
+                let code = response.statusCode;
+
+                if (response.statusCode !== 200) {
+
+                    console.log(chalk.red(code + ' ' + body));
+
+                }
 
             });
 
@@ -116,7 +122,13 @@ function sendCommand() {
                 uri: `${host}:${port}/jails/${configData.name}`,
             }, (error, response, body) => {
 
-                // console.log(error);
+                let code = response.statusCode;
+
+                if (response.statusCode !== 200) {
+
+                    console.log(chalk.red(code + ' ' + body));
+
+                }
 
             });
 

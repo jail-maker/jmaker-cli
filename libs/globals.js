@@ -1,5 +1,6 @@
 'use strict';
 
+const minimist = require('minimist');
 const ARGV = minimist(process.argv.slice(2));
 
 class Globals {

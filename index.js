@@ -12,54 +12,11 @@ const chalk = require('chalk');
 const WebSocket = require('ws');
 const log = console.log;
 
-const ARGV = minimist(process.argv.slice(2));
-const CWD = process.cwd();
+const globals = require(__dirname + '/libs/globals.js');
+const configData = require(__dirname + '/libs/config-data.js');
 
-let {
-
-    port = 3346,
-    host = 'http://127.0.0.1',
-    config = 'jmakefile.yml',
-    profile = undefined
-
-} = ARGV;
-
-if (!profile) profile = process.env['JMAKER_PROFILE'];
-
-let configFile = config;
-let command = ARGV._[0];
-
-var configData = {};
-
-try {
-
-    let buffer = fs.readFileSync(__dirname + '/defaults.yml', 'utf8');
-    let defaults = yaml.safeLoad(buffer);
-
-    buffer = fs.readFileSync(`${CWD}/${configFile}`, 'utf8');
-    configData = yaml.safeLoad(buffer);
-
-    configData = Object.assign(defaults, configData);
-
-} catch (e) {
-
-    console.log(e);
-    process.exit();
-
-}
-
-let profileData = configData.profile;
-delete(configData.profile);
-
-Object.assign(configData, profileData[profile]);
-
-let mounts = configData.mounts.map(points => {
-
-    return [path.resolve(points[0]), points[1]];
-
-});
-
-configData.mounts = mounts;
+const start = require(__dirname + '/actions/start.js');
+const stop = require(__dirname + '/actions/stop.js');
 
 function logHandler(data) {
 
@@ -89,29 +46,13 @@ function logHandler(data) {
 
 }
 
-function sendCommand() {
+function sendCommand(command) {
+
     switch (command) {
 
         case 'start':
 
-            request({
-                method: 'POST',
-                uri: `${host}:${port}/jails`,
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(configData),
-            }, (error, response, body) => {
-
-                let code = response.statusCode;
-
-                if (response.statusCode !== 200) {
-
-                    console.log(chalk.red(code + ' ' + body));
-
-                }
-
-            });
+            start();
 
             break;
 
@@ -119,7 +60,7 @@ function sendCommand() {
 
             request({
                 method: 'DELETE',
-                uri: `${host}:${port}/jails/${configData.name}`,
+                uri: `${globals.host}:${globals.port}/jails/${configData.name}`,
             }, (error, response, body) => {
 
                 let code = response.statusCode;
@@ -144,14 +85,14 @@ function sendCommand() {
 
 }
 
-let addr = url.parse(host);
+let addr = url.parse(globals.host);
 const ws = new WebSocket(`ws://${addr.host}:3347/`);
 
 ws.on('open', _ => {
 
     console.log('connected');
     ws.send(configData.name);
-    sendCommand(command);
+    sendCommand(globals.command);
 
 });
 

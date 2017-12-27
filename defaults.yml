@@ -1,5 +1,7 @@
 ---
 
+name: ""
+base: ""
 mount.devfs: true
 allow.raw_sockets: true
 allow.socket_af: true

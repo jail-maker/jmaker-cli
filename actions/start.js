@@ -5,6 +5,7 @@ const chalk = require('chalk');
 
 const globals = require('../libs/globals');
 const configData = require('../libs/config-data.js');
+const wsClient = require('../libs/ws-client.js');
 
 module.exports = _ => {
 
@@ -24,6 +25,8 @@ module.exports = _ => {
             console.log(chalk.red(`${code} ${body}`));
 
         }
+
+        wsClient.close();
 
     });
 

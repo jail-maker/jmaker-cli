@@ -1,0 +1,20 @@
+share/jmaker-cli/actions/start.js
+share/jmaker-cli/actions/stop.js
+share/jmaker-cli/actions/restart.js
+share/jmaker-cli/actions/destroy.js
+share/jmaker-cli/actions/update.js
+share/jmaker-cli/defaults.yml
+share/jmaker-cli/index.js
+share/jmaker-cli/libs/globals.js
+share/jmaker-cli/libs/config-data.js
+share/jmaker-cli/libs/ws-client.js
+share/jmaker-cli/LICENSE
+share/jmaker-cli/package.json
+share/jmaker-cli/README.md
+
+@postexec /bin/ln -s ${PKG_PREFIX}/share/jmaker-cli/index.js ${PKG_PREFIX}/bin/jmaker-cli
+@postexec /usr/local/bin/yarn --cwd=${PKG_PREFIX}/share/jmaker-cli
+
+@postunexec /bin/rm ${PKG_PREFIX}/bin/jmaker-cli
+@postunexec /bin/rm -rdf ${PKG_PREFIX}/share/jmaker-cli/node_modules
+@postunexec /bin/rm ${PKG_PREFIX}/share/jmaker-cli/yarn.lock

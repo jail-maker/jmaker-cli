@@ -16,6 +16,7 @@ dependencies: {}
 quota: false
 mounts: []
 pkg: []
+pkg-regex: []
 rctl: {}
 cpus: false
 cpuset: false

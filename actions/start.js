@@ -15,6 +15,7 @@ module.exports = _ => {
         headers: {
             'Content-type': 'application/json'
         },
+        timeout: null,
         body: JSON.stringify(configData),
     }, (error, response, body) => {
 

@@ -54,6 +54,12 @@ class ConfigData {
 
         });
 
+        this.copy = this.copy.map(points => {
+
+            return [path.resolve(points[0]), points[1]];
+
+        });
+
     }
 
 }

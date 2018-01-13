@@ -56,6 +56,9 @@ class ConfigData {
 
         this.copy = this.copy.map(points => {
 
+            if (typeof(points) === 'string') 
+                points = [points, points];
+
             return [path.resolve(points[0]), points[1]];
 
         });

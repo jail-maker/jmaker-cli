@@ -18,6 +18,7 @@ copy: []
 mounts: []
 pkg: []
 pkg-regex: []
+env: {}
 rctl: {}
 cpus: false
 cpuset: false

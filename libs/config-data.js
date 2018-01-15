@@ -59,7 +59,7 @@ class ConfigData {
             if (typeof(points) === 'string') 
                 points = [points, points];
 
-            return [path.resolve(points[0]), points[1]];
+            return [path.resolve(points[0]), path.resolve(points[1])];
 
         });
 

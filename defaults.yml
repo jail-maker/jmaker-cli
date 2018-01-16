@@ -25,3 +25,4 @@ cpuset: false
 profile: {}
 exec.j-prestart: []
 exec.j-poststart: []
+resolv-sync: true

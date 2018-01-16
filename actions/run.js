@@ -11,7 +11,7 @@ module.exports = _ => {
 
     request({
         method: 'POST',
-        uri: `${globals.host}:${globals.port}/jails/start`,
+        uri: `${globals.host}:${globals.port}/jails/run`,
         headers: {
             'Content-type': 'application/json'
         },

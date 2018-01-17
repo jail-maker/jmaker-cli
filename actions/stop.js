@@ -11,7 +11,7 @@ module.exports = _ => {
 
     request({
         method: 'DELETE',
-        uri: `${globals.host}:${globals.port}/jails/${configData.name}`,
+        uri: `${globals.host}:${globals.port}/jails/${configData.name}/stop`,
     }, (error, response, body) => {
 
         let code = response.statusCode;

@@ -2,6 +2,7 @@
 
 'use strict';
 
+const Daemonize = require('daemonize');
 const globals = require(__dirname + '/libs/globals.js');
 const configData = require(__dirname + '/libs/config-data.js');
 const wsClient = require(__dirname + '/libs/ws-client.js');
@@ -10,6 +11,15 @@ const create = require(__dirname + '/actions/create.js');
 const start = require(__dirname + '/actions/start.js');
 const run = require(__dirname + '/actions/run.js');
 const stop = require(__dirname + '/actions/stop.js');
+
+let settings = {
+    pid: `${process.env.HOME}/jmaker-cli.pid`,
+};
+
+let daemonize = new Daemonize(settings);
+
+if (process.argv.indexOf('-d')) daemonize.start();
+if (process.argv.indexOf('--daemonize')) daemonize.start();
 
 function sendCommand(command) {
 

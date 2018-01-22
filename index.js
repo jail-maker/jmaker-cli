@@ -13,13 +13,13 @@ const run = require(__dirname + '/actions/run.js');
 const stop = require(__dirname + '/actions/stop.js');
 
 let settings = {
-    pid: `${process.env.HOME}/jmaker-cli.pid`,
+    pid: `${process.env.HOME}/.jmaker-cli.pid`,
 };
 
 let daemonize = new Daemonize(settings);
 
-if (process.argv.indexOf('-d')) daemonize.start();
-if (process.argv.indexOf('--daemonize')) daemonize.start();
+if (process.argv.indexOf('--daemonize') !== -1) daemonize.start();
+else if (process.argv.indexOf('-d') !== -1) daemonize.start();
 
 function sendCommand(command) {
 
@@ -54,7 +54,13 @@ function sendCommand(command) {
 wsClient.on('open', _ => {
 
     console.log('connected');
-    wsClient.send(configData.name);
+
+    wsClient.send(JSON.stringify({
+        action: 'connect',
+        channel:  configData.name,
+        data: '',
+    }));
+
     sendCommand(globals.command);
 
 });

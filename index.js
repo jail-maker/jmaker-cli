@@ -21,12 +21,12 @@ let daemonize = new Daemonize(settings);
 if (process.argv.indexOf('--daemonize') !== -1) daemonize.start();
 else if (process.argv.indexOf('-d') !== -1) daemonize.start();
 
-function sendCommand(command) {
+async function sendCommand(command) {
 
     switch (command) {
 
         case 'create':
-            create();
+            await create();
             break;
 
         case 'start':
@@ -51,7 +51,7 @@ function sendCommand(command) {
 
 }
 
-wsClient.on('open', _ => {
+wsClient.on('open', async _ => {
 
     console.log('connected');
 
@@ -61,6 +61,6 @@ wsClient.on('open', _ => {
         data: '',
     }));
 
-    sendCommand(globals.command);
+    await sendCommand(globals.command);
 
 });

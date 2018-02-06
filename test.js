@@ -34,8 +34,23 @@ const imageExists = async href => {
 
 (async _ => {
 
-    request({
+    await request({
         uri: `${SERV_OROGIN}/images/download-from-repo`,
+        method: 'POST',
+        json: true,
+        body: {
+            image: 'second',
+            repository: 'localhost:3000'
+        }
+    });
+
+    await request({
+        uri: `${REPO_OROGIN}/images/second`,
+        method: 'DELETE',
+    });
+
+    await request({
+        uri: `${SERV_OROGIN}/images/push-to-repo`,
         method: 'POST',
         json: true,
         body: {

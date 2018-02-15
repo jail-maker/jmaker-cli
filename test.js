@@ -14,49 +14,33 @@ const REPO_PORT = '3000';
 const REPO_API_VERSION = 'v1';
 const REPO_OROGIN = `http://${REPO_HOST}:${REPO_PORT}/api/${REPO_API_VERSION}`;
 
-const IMAGE_NAME = 'first';
-
-const imageExists = async href => {
-
-    try {
-
-        await request(href);
-        return true;
-
-    } catch (error) {
-
-        if (error.statusCode === 404) return false;
-        else throw error;
-
-    }
-
-}
+const IMAGE_NAME = 'freebsd-11.1';
 
 (async _ => {
 
-    // await request({
-    //     uri: `${SERV_OROGIN}/images/download-from-repo`,
-    //     method: 'POST',
-    //     json: true,
-    //     body: {
-    //         image: 'second',
-    //         repository: 'localhost:3000'
-    //     }
-    // });
+    await request({
+        uri: `${SERV_OROGIN}/images/download-from-repo`,
+        method: 'POST',
+        json: true,
+        body: {
+            image: 'freebsd-11.1',
+            repository: 'localhost:3000'
+        }
+    });
 
     // await request({
     //     uri: `${REPO_OROGIN}/images/second`,
     //     method: 'DELETE',
     // });
 
-    await request({
-        uri: `${SERV_OROGIN}/images/push-to-repo`,
-        method: 'POST',
-        json: true,
-        body: {
-            image: 'second',
-            repository: 'localhost:3000'
-        }
-    });
+    // await request({
+    //     uri: `${SERV_OROGIN}/images/push-to-repo`,
+    //     method: 'POST',
+    //     json: true,
+    //     body: {
+    //         image: IMAGE_NAME,
+    //         repository: 'localhost:3000'
+    //     }
+    // });
 
 })();

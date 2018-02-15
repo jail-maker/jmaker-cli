@@ -33,9 +33,12 @@ module.exports = async _ => {
     await compress(globals.cwd, archive, exclude);
     let context = fs.createReadStream(archive);
 
+    console.log(configData);
+
     request({
         method: 'POST',
-        uri: `${globals.host}:${globals.port}/jails/create`,
+        // uri: `${globals.host}:${globals.port}/jails/create`,
+        uri: `${globals.host}:${globals.port}/images`,
         timeout: null,
         formData: {
             body: JSON.stringify(configData),

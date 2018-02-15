@@ -16,7 +16,10 @@ module.exports = _ => {
             'Content-type': 'application/json'
         },
         timeout: null,
-        body: JSON.stringify(configData),
+        json: true,
+        body: {
+            name: configData.name
+        },
     }, (error, response, body) => {
 
         let code = response.statusCode;

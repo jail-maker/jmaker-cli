@@ -1,7 +1,7 @@
 ---
 
 name: ""
-base: ""
+from: ""
 mount.devfs: true
 allow.raw_sockets: true
 allow.socket_af: true
@@ -17,7 +17,6 @@ quota: false
 copy: []
 mounts: []
 pkg: []
-pkg-regex: []
 env: {}
 rctl: {}
 cpus: false

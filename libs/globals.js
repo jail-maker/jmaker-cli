@@ -12,7 +12,8 @@ class Globals {
             port = 3346,
             host = 'http://127.0.0.1',
             config = 'jmakefile.yml',
-            profile = undefined
+            repository = 'localhost:3000',
+            profile = undefined,
 
         } = ARGV;
 
@@ -25,6 +26,7 @@ class Globals {
         this.configFile = config;
         this.profile = profile;
         this.command = command;
+        this.repository = repository;
         this.cwd = process.cwd();
 
     }

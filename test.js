@@ -14,7 +14,7 @@ const REPO_PORT = '3000';
 const REPO_API_VERSION = 'v1';
 const REPO_OROGIN = `http://${REPO_HOST}:${REPO_PORT}/api/${REPO_API_VERSION}`;
 
-const IMAGE_NAME = 'freebsd-11.1';
+const IMAGE_NAME = 'jmaker-cli';
 
 (async _ => {
 
@@ -23,7 +23,7 @@ const IMAGE_NAME = 'freebsd-11.1';
         method: 'POST',
         json: true,
         body: {
-            image: 'freebsd-11.1',
+            image: IMAGE_NAME,
             repository: 'localhost:3000'
         }
     });

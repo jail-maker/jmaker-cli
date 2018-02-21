@@ -14,6 +14,7 @@ class Globals {
             config = 'jmakefile.yml',
             repository = 'localhost:3000',
             profile = undefined,
+            context = process.cwd(),
 
         } = ARGV;
 
@@ -27,6 +28,7 @@ class Globals {
         this.profile = profile;
         this.command = command;
         this.repository = repository;
+        this.context = context;
         this.cwd = process.cwd();
 
     }

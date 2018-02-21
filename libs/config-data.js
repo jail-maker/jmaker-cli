@@ -41,6 +41,8 @@ class ConfigData {
         Object.assign(this, this.profile[globals.profile]);
         delete(this.profile);
 
+        this.workdir = globals.context;
+
         for (let key in this) {
 
             if (ARGV[key])
@@ -59,6 +61,7 @@ class ConfigData {
             if (typeof(points) === 'string') 
                 points = [points, points];
 
+            return [points[0], points[1]];
             return [path.resolve(points[0]), path.resolve(points[1])];
 
         });

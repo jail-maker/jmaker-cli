@@ -30,14 +30,15 @@ module.exports = async _ => {
 
     let exclude = getIgnoreFiles();
     let archive = `/tmp/${configData.name}-context.tar`;
-    await compress(globals.cwd, archive, exclude);
+    let cd = globals.context;
+
+    await compress('./', archive, {exclude, cd});
     let context = fs.createReadStream(archive);
 
     console.log(configData);
 
     request({
         method: 'POST',
-        // uri: `${globals.host}:${globals.port}/jails/create`,
         uri: `${globals.host}:${globals.port}/images`,
         timeout: null,
         formData: {
@@ -60,32 +61,3 @@ module.exports = async _ => {
 
 }
 
-// module.exports = async _ => {
-
-//     let archive = '/tmp/jmaker-context.tar';
-//     await compress(globals.cwd, archive);
-//     let context = fs.createReadStream(archive);
-
-//     request({
-//         method: 'POST',
-//         uri: `${globals.host}:${globals.port}/jails/create`,
-//         headers: {
-//             'Content-type': 'application/json'
-//         },
-//         timeout: null,
-//         body: JSON.stringify(configData),
-//     }, (error, response, body) => {
-
-//         let code = response.statusCode;
-
-//         if (code !== 200) {
-
-//             console.log(chalk.red(`${code} ${body}`));
-
-//         }
-
-//         wsClient.close();
-
-//     });
-
-// }

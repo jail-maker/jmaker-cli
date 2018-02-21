@@ -38,23 +38,6 @@ const downloadFromRepo = async (image, repo = 'localhost:3000') => {
 
 }
 
-const start = async (image) => {
-
-    await prequest({
-        method: 'POST',
-        uri: `${globals.host}:${globals.port}/jails/start`,
-        headers: {
-            'Content-type': 'application/json'
-        },
-        timeout: null,
-        json: true,
-        body: {
-            name: image
-        },
-    });
-
-}
-
 module.exports = async _ => {
 
     try {
@@ -64,8 +47,6 @@ module.exports = async _ => {
             await downloadFromRepo(configData.name, globals.repository);
 
         }
-
-        await start(configData.name);
 
     } catch (error) {
 
@@ -78,3 +59,4 @@ module.exports = async _ => {
     }
 
 }
+

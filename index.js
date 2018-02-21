@@ -11,6 +11,7 @@ const create = require(__dirname + '/actions/create.js');
 const start = require(__dirname + '/actions/start.js');
 const run = require(__dirname + '/actions/run.js');
 const stop = require(__dirname + '/actions/stop.js');
+const pull = require(__dirname + '/actions/pull.js');
 
 let settings = {
     pid: `${process.env.HOME}/.jmaker-cli.pid`,
@@ -35,6 +36,10 @@ async function sendCommand(command) {
 
         case 'run':
             run();
+            break;
+
+        case 'pull':
+            pull();
             break;
 
         case 'stop':

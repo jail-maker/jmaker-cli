@@ -7,13 +7,16 @@ env:
   ASSUME_ALWAYS_YES: "yes"
 
 copy:
-  - ["./.git", "/usr/local/project/.git"]
+  - ["latest.conf", "/usr/local/etc/pkg/repos/latest.conf"]
+  - ["FreeBSD.conf", "/usr/local/etc/pkg/repos/FreeBSD.conf"]
 
 exec.j-prestart:
-  - "pkg install -y nano"
-  # - "pkg install -y i3 i3lock i3status"
-  # - "pkg install -y xf86-video-qxl"
-  # - "pw useradd -n user -s /bin/csh -m -w random"
+  # - "pkg install -y atop && pkg clean -ay"
+  - "pkg install -y xorg && pkg clean -ay"
+  - "pkg install -y i3 i3lock i3status"
+  - "pkg install -y xf86-video-qxl"
+  - "pw useradd -n user -s /bin/csh -m -w random"
+  - "pkg clean -ay"
 
 exec.j-poststart:
   - "ping ya.ru"

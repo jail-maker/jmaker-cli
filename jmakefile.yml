@@ -9,17 +9,20 @@ env:
 copy:
   - ["latest.conf", "/usr/local/etc/pkg/repos/latest.conf"]
   - ["FreeBSD.conf", "/usr/local/etc/pkg/repos/FreeBSD.conf"]
+  - ["spiceqxl.xorg.conf", "/usr/local/etc/X11/xorg.conf.d/spiceqxl.xorg.conf"]
 
 exec.j-prestart:
   # - "pkg install -y atop && pkg clean -ay"
   - "pkg install -y xorg && pkg clean -ay"
-  - "pkg install -y i3 i3lock i3status"
-  - "pkg install -y xf86-video-qxl"
+  - "pkg install -y hal dbus && pkg clean -ay"
+  - "pkg install -y i3 i3lock i3status && pkg clean -ay"
+  - "pkg install -y xf86-video-qxl && pkg clean -ay"
+  - "pkg install -y sudo && pkg clean -ay"
   - "pw useradd -n user -s /bin/csh -m -w random"
-  - "pkg clean -ay"
+  - "echo \"i3\" > /home/user/.xinitrc"
 
 exec.j-poststart:
-  - "ping ya.ru"
-  # - "service dbus onestart"
-  # - "service hald onestart"
-  # - "su - user startx"
+  # - "ping ya.ru"
+  - "service dbus onestart"
+  - "service hald onestart"
+  - "sudo -u user startx"

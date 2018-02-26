@@ -38,6 +38,9 @@ async function sendCommand(command) {
             run();
             break;
 
+        case 'clone':
+            break;
+
         case 'pull':
             pull();
             break;
@@ -46,7 +49,12 @@ async function sendCommand(command) {
             stop();
             break;
 
+        case 'promote':
+            break;
+
         case 'restart':
+            stop();
+            start();
             break;
 
         default:

@@ -16,13 +16,12 @@ sysvshm: true
 dependencies: {}
 quota: false
 copy: []
-mounts: []
 pkg: []
 env: {}
 rctl: {}
 cpus: false
 cpuset: false
 profile: {}
-exec.j-prestart: []
-exec.j-poststart: []
+building: []
+starting: []
 resolv-sync: true

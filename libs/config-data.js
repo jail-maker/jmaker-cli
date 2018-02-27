@@ -50,21 +50,21 @@ class ConfigData {
 
         };
 
-        this.mounts = this.mounts.map(points => {
+        // this.mounts = this.mounts.map(points => {
 
-            return [path.resolve(points[0]), points[1]];
+        //     return [path.resolve(points[0]), points[1]];
 
-        });
+        // });
 
-        this.copy = this.copy.map(points => {
+        // this.copy = this.copy.map(points => {
 
-            if (typeof(points) === 'string') 
-                points = [points, points];
+        //     if (typeof(points) === 'string') 
+        //         points = [points, points];
 
-            return [points[0], points[1]];
-            return [path.resolve(points[0]), path.resolve(points[1])];
+        //     return [points[0], points[1]];
+        //     return [path.resolve(points[0]), path.resolve(points[1])];
 
-        });
+        // });
 
     }
 

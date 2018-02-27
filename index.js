@@ -45,6 +45,12 @@ async function sendCommand(command) {
             pull();
             break;
 
+        case 'push':
+            break;
+
+        case 'commit':
+            break;
+
         case 'stop':
             stop();
             break;
@@ -52,9 +58,15 @@ async function sendCommand(command) {
         case 'promote':
             break;
 
+        case 'export':
+            break;
+
+        case 'import':
+            break;
+
         case 'restart':
-            stop();
-            start();
+            // stop();
+            // start();
             break;
 
         default:

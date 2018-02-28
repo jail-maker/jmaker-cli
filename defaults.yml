@@ -15,7 +15,6 @@ sysvsem: true
 sysvshm: true
 dependencies: {}
 quota: false
-copy: []
 pkg: []
 env: {}
 rctl: {}

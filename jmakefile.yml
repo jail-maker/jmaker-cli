@@ -3,48 +3,35 @@ name: "jmaker-cli"
 from: "freebsd-11.1"
 ip4.addr: "auto"
 
-env:
-
-  ASSUME_ALWAYS_YES: "yes"
-  TEST: "yes"
-
 building:
 
-  - run: "env"
+  - workdir: "/usr/local/etc/pkg/repos"
+
+  - copy: "latest.conf"
+  - copy: "FreeBSD.conf"
+
+  - workdir: "/usr/local/etc/X11/xorg.conf.d"
+
+  - copy: "spiceqxl.xorg.conf"
 
   - env:
-      TEST: "no"
+      ASSUME_ALWAYS_YES: "yes"
 
-  - run: "env"
+  - run: "pkg install -y xorg && pkg clean -ay"
+  - run: "pkg install -y hal dbus && pkg clean -ay"
+  - run: "pkg install -y i3 i3lock i3status && pkg clean -ay"
+  - run: "pkg install -y xf86-video-qxl && pkg clean -ay"
+  - run: "pkg install -y sudo && pkg clean -ay"
 
-  - run: "pwd"
+  - run: "pw useradd -n user -s /bin/csh -m -w random"
 
-  - workdir: "/"
+  - workdir: "/usr/home/user"
 
-  - run: "pwd"
-
-  # - copy: ["latest.conf", "/usr/local/etc/pkg/repos/latest.conf"]
-  # - copy: ["FreeBSD.conf", "/usr/local/etc/pkg/repos/FreeBSD.conf"]
-  # - copy: ["spiceqxl.xorg.conf", "/usr/local/etc/X11/xorg.conf.d/spiceqxl.xorg.conf"]
-
-  # - env:
-  #     ASSUME_ALWAYS_YES: "yes"
-
-  # - run: "pkg install -y xorg && pkg clean -ay"
-  # - run: "pkg install -y hal dbus && pkg clean -ay"
-  # - run: "pkg install -y i3 i3lock i3status && pkg clean -ay"
-  # - run: "pkg install -y xf86-video-qxl && pkg clean -ay"
-  # - run: "pkg install -y sudo && pkg clean -ay"
-
-  # - env:
-  #     ASSUME_ALWAYS_YES: "no"
-
-  # - run: "pw useradd -n user -s /bin/csh -m -w random"
-  # - run: "echo \"i3\" > /home/user/.xinitrc"
+  - run: "echo \"i3\" > .xinitrc"
 
 starting:
 
   - run: "ping ya.ru"
   - run: "service dbus onestart"
   - run: "service hald onestart"
-  - run: "sudo -u user sh -c \"cd ~ && startx\""
+  - run: "sudo -u user startx"

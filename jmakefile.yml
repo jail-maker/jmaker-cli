@@ -7,6 +7,8 @@ building:
 
   - mount: ["/usr/home", "/usr/home"]
 
+  - volume: "/mnt"
+
   - run: "ls /usr/home"
 
   - workdir: "/usr/local/etc/pkg/repos"

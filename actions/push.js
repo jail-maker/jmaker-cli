@@ -1,36 +1,26 @@
 'use strict';
 
-const request = require('request');
 const prequest = require('request-promise-native');
-const chalk = require('chalk');
-
-const globals = require('../libs/globals');
 const configData = require('../libs/config-data.js');
-const wsClient = require('../libs/ws-client.js');
+const globals = require('../libs/globals.js');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = async _ => {
 
-    try {
+    let tokenContent = fs.readFileSync(globals.tokenFile);
+    let tokenJson = JSON.parse(tokenContent);
 
-        let result = await prequest({
-            uri: `${globals.host}:${globals.port}/images/push-to-repo`,
-            method: 'POST',
-            json: true,
-            body: {
-                image: configData.name,
-                repository: globals.repository,
-            }
-        });
-
-        console.log(result);
-
-    } catch (e) {
-
-        console.log(e);
-    
-    }
-
-    wsClient.close();
+    await prequest({
+        uri: `${globals.host}:${globals.port}/images/push-to-repo`,
+        method: 'POST',
+        json: true,
+        body: {
+            image: configData.name,
+            repository: configData.from,
+            tokenJson: tokenJson,
+        }
+    });
 
 }
 

@@ -2,6 +2,9 @@
 
 const minimist = require('minimist');
 const ARGV = minimist(process.argv.slice(2));
+const os = require('os');
+const {ensureDirSync} = require('fs-extra');
+const path = require('path');
 
 class Globals {
 
@@ -15,6 +18,7 @@ class Globals {
             repository = 'localhost:3000',
             profile = undefined,
             context = process.cwd(),
+            authServer = 'localhost:3001', 
 
         } = ARGV;
 
@@ -30,6 +34,15 @@ class Globals {
         this.repository = repository;
         this.context = context;
         this.cwd = process.cwd();
+        this.authServer = authServer;
+
+        let homeDir  = os.homedir();
+        let dir = path.resolve(homeDir, '.cache', 'jmaker-cli');
+        ensureDirSync(dir);
+
+        let file = path.resolve(dir, 'token.json');
+
+        this.tokenFile = file;
 
     }
 

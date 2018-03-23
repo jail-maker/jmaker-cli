@@ -2,6 +2,15 @@
 
 'use strict';
 
+const yargs = require('yargs');
+
+yargs.commandDir('cmds')
+    .demandCommand()
+    .help()
+    .argv
+
+process.exit();
+
 const Daemonize = require('daemonize');
 const globals = require(__dirname + '/libs/globals.js');
 const configData = require(__dirname + '/libs/config-data.js');

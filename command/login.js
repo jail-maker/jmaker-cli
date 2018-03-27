@@ -15,7 +15,10 @@ exports.describe = 'aquire token';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('repository': {
+            alias: 'rep',
+        });
 
 }
 
@@ -39,7 +42,7 @@ exports.handler = args => {
         json: true,
         body: {
             image: jailConfig.name,
-            repository: jailConfig.from,
+            repository: args['repository'] !== undefined ? args['repository'] : jailConfig.from,
         }
     });
 

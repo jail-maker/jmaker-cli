@@ -1,0 +1,6 @@
+server-protocol: 'http'
+server-socket: 'localhost:3346'
+log-protocol: 'ws'
+log-socket: 'localhost:3347'
+jail-config: 'jmakefile.yml'
+profile: ''

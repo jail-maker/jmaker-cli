@@ -41,7 +41,7 @@ exports.handler = async args => {
         json: true,
         body: {
             image: jailConfig.name,
-            repository: args['repository'] !== undefined ? args['repository'] : jailConfig.from,
+            repository: args['repository'] !== undefined ? args['repository'] : args['repository-socket'],
         }
     });
 

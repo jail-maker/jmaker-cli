@@ -14,17 +14,14 @@ exports.builder = yargs => {
 
 }
 
-exports.handler = args => {
+exports.handler = await args => {
 
     let jailConfig = new JailConfig(args['jail-config']);
     let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
     request({
-        method: 'POST',
+        method: 'DELETE',
         uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/destroy`,
-        json: true,
-        timeout: null,
-        body: jailConfig,
     }, (error, response, body) => {
 
         let code = response.statusCode;

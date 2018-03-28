@@ -15,8 +15,12 @@ let args = yargs
         alias: 'd',
         type: 'boolean',
     })
+    .option('profile', {
+        default: undefined,
+    })
     .env('JMAKER')
     .demandCommand(0,1)
+    .strict(true)
     .recommendCommands()
     .wrap(null)
     .config('config', function(configFile) {

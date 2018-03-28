@@ -20,11 +20,8 @@ exports.handler = args => {
     let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
     request({
-        method: 'POST',
+        method: 'DELETE',
         uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/stop`,
-        json: true,
-        timeout: null,
-        body: jailConfig,
     }, (error, response, body) => {
 
         let code = response.statusCode;

@@ -2,5 +2,6 @@
 
 ## example:
 ```
-./index.js create --jail-config ./jail-example/jmakefile.yml
+cd example
+../index.js create
 ```

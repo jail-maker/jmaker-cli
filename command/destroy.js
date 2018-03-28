@@ -3,6 +3,7 @@
 const request = require('request');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
+const chalk = require('chalk');
 
 exports.command = 'destroy';
 

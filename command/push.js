@@ -16,6 +16,8 @@ exports.builder = yargs => {
     return yargs
         .option('repository', {
             alias: 'rep',
+        }).option('name', {
+            demandOption: true,
         });
 
 }
@@ -33,7 +35,7 @@ exports.handler = async args => {
         json: true,
         timeout: null,
         body: {
-            image: jailConfig.name,
+            image: args['name'],
             repository: args['repository'] !== undefined ? args['repository'] : args['repository-socket'],
             tokenJson: tokenJson,
         },

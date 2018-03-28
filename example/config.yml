@@ -7,4 +7,4 @@ auth-server-socket: 'localhost:3001'
 repository-socket: 'localhost:3000'
 jail-config: 'jmakefile.yml'
 token-file: '~/.cache/jmaker-cli/token.json'
-profile: ''
+profile: undefined

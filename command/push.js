@@ -22,7 +22,7 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args['jail-config']);
+    let jailConfig = new JailConfig(args);
 
     let tokenContent = fs.readFileSync(args['token-file']);
     let tokenJson = JSON.parse(tokenContent);

@@ -1,3 +1,4 @@
+
 'use strict';
 
 const request = require('request');
@@ -6,17 +7,16 @@ const chalk = require('chalk');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
 
-exports.command = 'run';
+exports.command = 'pull';
 
-exports.describe = 'run jail';
+exports.describe = 'pull jail';
 
 exports.builder = yargs => {
 
     return yargs
         .option('name', {
-            
+            demandOption: true,
         });
-
 }
 
 exports.handler = async args => {
@@ -24,17 +24,15 @@ exports.handler = async args => {
     let jailConfig = new JailConfig(args);
     let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
-    let name = args['name'] !== undefined ? args['name'] : jailConfig.name;
+    let name = args['name'];
 
     try {
 
-        if (!(await imageExists(jailConfig, args))) {
+        if (!(await imageExists(args, name))) {
 
-            await downloadFromRepo(jailConfig, args);
+            await downloadFromRepo(args, name);
 
         }
-
-        await start(jailConfig, args);
 
     } catch (error) {
 
@@ -49,11 +47,11 @@ exports.handler = async args => {
 
 }
 
-const imageExists = async (jailConfig, args) => {
+const imageExists = async (args, name) => {
 
     try {
 
-        await prequest(`${args['server-protocol']}://${args['server-socket']}/images/${jailConfig.name}`);
+        await prequest(`${args['server-protocol']}://${args['server-socket']}/images/${name}`);
         return true;
 
     } catch (error) {
@@ -65,33 +63,16 @@ const imageExists = async (jailConfig, args) => {
 
 }
 
-const downloadFromRepo = async (jailConfig, args) => {
+const downloadFromRepo = async (args, name) => {
 
     await prequest({
         uri: `${args['server-protocol']}://${args['server-socket']}/images/download-from-repo`,
         method: 'POST',
         json: true,
         body: {
-            image: jailConfig.name,
+            image: name,
             repository: args['repository-socket'],
         }
-    });
-
-}
-
-const start = async (jailConfig, args) => {
-
-    await prequest({
-        method: 'POST',
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/start`,
-        headers: {
-            'Content-type': 'application/json',
-        },
-        timeout: null,
-        json: true,
-        body: {
-            name: jailConfig.name
-        },
     });
 
 }

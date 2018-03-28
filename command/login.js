@@ -23,7 +23,7 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args['jail-config']);
+    let jailConfig = new JailConfig(args);
 
     let {name, password} = await inquirer.prompt([
         {prefix: '', name: 'name', message: 'name: ', type: 'input'},

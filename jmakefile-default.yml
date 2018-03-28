@@ -1,7 +1,8 @@
 ---
 
 name: ""
-base: ""
+from: ""
+workdir: "/"
 mount.devfs: true
 allow.raw_sockets: true
 allow.socket_af: true
@@ -14,15 +15,12 @@ sysvsem: true
 sysvshm: true
 dependencies: {}
 quota: false
-copy: []
-mounts: []
 pkg: []
-pkg-regex: []
 env: {}
 rctl: {}
 cpus: false
 cpuset: false
 profile: {}
-exec.j-prestart: []
-exec.j-poststart: []
+building: []
+starting: []
 resolv-sync: true

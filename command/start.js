@@ -16,7 +16,7 @@ exports.builder = yargs => {
 
 exports.handler = args => {
 
-    let jailConfig = new JailConfig(args['jail-config']);
+    let jailConfig = new JailConfig(args);
     let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
     request({

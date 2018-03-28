@@ -13,29 +13,30 @@ exports.describe = 'push to repository';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('repository', {
+            alias: 'rep',
+        });
 
 }
 
-exports.handler = args => {
+exports.handler = async args => {
 
     let jailConfig = new JailConfig(args['jail-config']);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
-    // let tokenContent = fs.readFileSync(globals.tokenFile);
-    // let tokenJson = JSON.parse(tokenContent);
+    let tokenContent = fs.readFileSync(args['token-file']);
+    let tokenJson = JSON.parse(tokenContent);
 
     request({
         method: 'POST',
         uri: `${args['server-protocol']}://${args['server-socket']}/images/push-to-repo`,
         json: true,
         timeout: null,
-        body: {},
-        // body: {
-        //     image: configData.name,
-        //     repository: configData.from,
-        //     tokenJson: tokenJson,
-        // },
+        body: {
+            image: jailConfig.name,
+            repository: args['repository'] !== undefined ? args['repository'] : jailConfig.from,
+            tokenJson: tokenJson,
+        },
     }, (error, response, body) => {
 
         let code = response.statusCode;
@@ -45,8 +46,6 @@ exports.handler = args => {
             console.log(chalk.red(`${code} ${body}`));
 
         }
-
-        logWebSocket.close();
 
     });
 

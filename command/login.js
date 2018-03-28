@@ -1,10 +1,9 @@
 'use strict';
 
 const prequest = require('request-promise-native');
-const base64url = require('base64url');
-const passwordPrompt = require('password-prompt');
 const inquirer = require('inquirer');
 const fs = require('fs');
+const fsextra = require('fs-extra');
 const chalk = require('chalk');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
@@ -16,13 +15,13 @@ exports.describe = 'aquire token';
 exports.builder = yargs => {
 
     return yargs
-        .option('repository': {
+        .option('repository', {
             alias: 'rep',
         });
 
 }
 
-exports.handler = args => {
+exports.handler = async args => {
 
     let jailConfig = new JailConfig(args['jail-config']);
 
@@ -32,12 +31,12 @@ exports.handler = args => {
     ]);
 
     let res = await prequest({
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/create`,
+        uri: `${args['auth-server-protocol']}://${args['auth-server-socket']}`,
         method: 'GET',
         'auth': {
             'user': name,
             'pass': password,
-            'sendImmediately': false
+            'sendImmediately': false,
         },
         json: true,
         body: {
@@ -46,6 +45,7 @@ exports.handler = args => {
         }
     });
 
+    fsextra.ensureFileSync(args['token-file']);
     fs.writeFileSync(args['token-file'], JSON.stringify(res));
 
 }

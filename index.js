@@ -1,98 +1,47 @@
 #!/usr/bin/env node
-
 'use strict';
 
+const yargs = require('yargs');
+const fs = require('fs');
+const yaml = require('js-yaml');
 const Daemonize = require('daemonize');
-const globals = require(__dirname + '/libs/globals.js');
-const configData = require(__dirname + '/libs/config-data.js');
-const wsClient = require(__dirname + '/libs/ws-client.js');
 
-const create = require(__dirname + '/actions/create.js');
-const start = require(__dirname + '/actions/start.js');
-const run = require(__dirname + '/actions/run.js');
-const stop = require(__dirname + '/actions/stop.js');
-const pull = require(__dirname + '/actions/pull.js');
-const push = require(__dirname + '/actions/push.js');
-const login = require(__dirname + '/actions/login.js');
+let args = yargs
+    .commandDir('command')
+    .option('config', {
+        default: 'config.yml',
+    })
+    .option('daemonize', {
+        alias: 'd',
+        type: 'boolean',
+    })
+    .option('profile', {
+        default: undefined,
+    })
+    .env('JMAKER')
+    .demandCommand(0,1)
+    .strict(true)
+    .recommendCommands()
+    .wrap(null)
+    .config('config', function(configFile) {
 
-let settings = {
-    pid: `${process.env.HOME}/.jmaker-cli.pid`,
-};
+        let content = fs.readFileSync(configFile, 'utf-8');
+        let obj = yaml.safeLoad(content);
 
-let daemonize = new Daemonize(settings);
+        return obj;
 
-if (process.argv.indexOf('--daemonize') !== -1) daemonize.start();
-else if (process.argv.indexOf('-d') !== -1) daemonize.start();
+    })
+    .version(`0.0.3`)   
+    .parse();
 
-async function sendCommand(command) {
+if(args['daemonize']) {
 
-    switch (command) {
+    let settings = {
+        pid: `${process.env.HOME}/.jmaker-cli.pid`,
+    };
 
-        case 'create':
-            await create();
-            break;
+    let daemonize = new Daemonize(settings);
 
-        case 'start':
-            start();
-            break;
-
-        case 'run':
-            run();
-            break;
-
-        case 'clone':
-            break;
-
-        case 'pull':
-            await pull();
-            break;
-
-        case 'push':
-            await push();
-            break;
-
-        case 'commit':
-            break;
-
-        case 'stop':
-            stop();
-            break;
-
-        case 'promote':
-            break;
-
-        case 'export':
-            break;
-
-        case 'import':
-            break;
-
-        case 'restart':
-            // stop();
-            // start();
-            break;
-
-        case 'login':
-            login();
-            break;
-
-        default:
-            break;
-
-    }
+    daemonize.start();
 
 }
-
-wsClient.on('open', async _ => {
-
-    console.log('connected');
-
-    wsClient.send(JSON.stringify({
-        action: 'connect',
-        channel:  configData.name,
-        data: '',
-    }));
-
-    await sendCommand(globals.command);
-
-});

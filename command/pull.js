@@ -21,58 +21,58 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
+    // let jailConfig = new JailConfig(args);
+    // let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
-    let name = args['name'];
+    // let name = args['name'];
 
-    try {
+    // try {
 
-        if (!(await imageExists(args, name))) {
+    //     if (!(await imageExists(args, name))) {
 
-            await downloadFromRepo(args, name);
+    //         await downloadFromRepo(args, name);
 
-        }
+    //     }
 
-    } catch (error) {
+    // } catch (error) {
 
-        console.log(error);
+    //     console.log(error);
 
-    } finally {
+    // } finally {
 
-        logWebSocket.close();
+    //     logWebSocket.close();
 
-    }
+    // }
 
-
-}
-
-const imageExists = async (args, name) => {
-
-    try {
-
-        await prequest(`${args['server-protocol']}://${args['server-socket']}/images/${name}`);
-        return true;
-
-    } catch (error) {
-
-        if (error.statusCode === 404) return false;
-        else throw error;
-
-    }
 
 }
 
-const downloadFromRepo = async (args, name) => {
+// const imageExists = async (args, name) => {
 
-    await prequest({
-        uri: `${args['server-protocol']}://${args['server-socket']}/images/download-from-repo`,
-        method: 'POST',
-        json: true,
-        body: {
-            image: name,
-            repository: args['repository-socket'],
-        }
-    });
+//     try {
 
-}
+//         await prequest(`${args['server-protocol']}://${args['server-socket']}/images/${name}`);
+//         return true;
+
+//     } catch (error) {
+
+//         if (error.statusCode === 404) return false;
+//         else throw error;
+
+//     }
+
+// }
+
+// const downloadFromRepo = async (args, name) => {
+
+//     await prequest({
+//         uri: `${args['server-protocol']}://${args['server-socket']}/images/download-from-repo`,
+//         method: 'POST',
+//         json: true,
+//         body: {
+//             image: name,
+//             repository: args['repository-socket'],
+//         }
+//     });
+
+// }

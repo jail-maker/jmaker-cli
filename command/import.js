@@ -1,21 +1,21 @@
 'use strict';
 
-const request = require('request');
-const chalk = require('chalk');
-const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const fs = require('fs');
-const path = require('path');
+// const request = require('request');
+// const chalk = require('chalk');
+// const JailConfig = require('../lib/jail-config.js');
+// const LogWebSocket = require('../lib/log-web-socket.js');
+// const fs = require('fs');
+// const path = require('path');
 
-exports.command = 'push';
+exports.command = 'import';
 
-exports.describe = 'push to repository';
+exports.describe = 'import to server';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('repository-socket', {
-            alias: ['rep', 'r'],
+        .option('server-socket', {
+            alias: ['server', 's'],
         }).option('name', {
             demandOption: true,
         }).option('token-file', {

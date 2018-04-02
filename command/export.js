@@ -7,9 +7,9 @@ const LogWebSocket = require('../lib/log-web-socket.js');
 const fs = require('fs');
 const path = require('path');
 
-exports.command = 'push';
+exports.command = 'export';
 
-exports.describe = 'push to repository';
+exports.describe = 'export from server';
 
 exports.builder = yargs => {
 
@@ -18,8 +18,6 @@ exports.builder = yargs => {
             alias: ['rep', 'r'],
         }).option('name', {
             demandOption: true,
-        }).option('token-file', {
-            alias: 't'
         });
 
 }

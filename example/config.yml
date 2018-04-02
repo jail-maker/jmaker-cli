@@ -1,10 +1,16 @@
+
 server-protocol: 'http'
 server-socket: 'localhost:3346'
+
 log-protocol: 'ws'
 log-socket: 'localhost:3347'
+
 auth-server-protocol: 'http'
 auth-server-socket: 'localhost:3001'
+
+repository-protocol: 'http'
 repository-socket: 'localhost:3000'
+
 jail-config: 'jmakefile.yml'
-token-file: '~/.cache/jmaker-cli/token.json'
+cache-dir: '/home/md/.cache/jmaker-cli/'
 profile: undefined

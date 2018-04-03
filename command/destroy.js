@@ -7,7 +7,7 @@ const chalk = require('chalk');
 
 exports.command = 'destroy';
 
-exports.describe = 'destroy jail';
+exports.describe = 'destroy image';
 
 exports.builder = yargs => {
 
@@ -18,11 +18,13 @@ exports.builder = yargs => {
 exports.handler = async args => {
 
     let jailConfig = new JailConfig(args);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
+
+    let logRoot = `${args['log-protocol']}://${args['log-socket']}`;
+    let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
 
     request({
         method: 'DELETE',
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/destroy`,
+        uri: `${args['server-protocol']}://${args['server-socket']}/images/${jailConfig.name}`,
     }, (error, response, body) => {
 
         let code = response.statusCode;

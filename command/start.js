@@ -1,8 +1,9 @@
 'use strict';
 
-const request = require('request');
+const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
+const chalk = require('chalk');
 
 exports.command = 'start';
 
@@ -14,30 +15,36 @@ exports.builder = yargs => {
 
 }
 
-exports.handler = args => {
+exports.handler = async args => {
 
     let jailConfig = new JailConfig(args);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
 
-    request({
-        method: 'POST',
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/start`,
-        json: true,
-        timeout: null,
-        body: jailConfig,
-    }, (error, response, body) => {
+    let logRoot = `${args['log-protocol']}://${args['log-socket']}`;
+    let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
 
-        let code = response.statusCode;
+    try {
 
-        if (code !== 200) {
+        let res = await request({
+            method: 'POST',
+            uri: `${args['server-protocol']}://${args['server-socket']}/jails/start`,
+            json: true,
+            timeout: null,
+            body: jailConfig,
+        });
 
-            console.log(chalk.red(`${code} ${body}`));
+    } catch(e) {
+    
+    
+    }
 
-            logWebSocket.close();
+    // let code = res.statusCode;
 
-        }
+    // if (code !== 200) {
 
+    //     console.log(chalk.red(`${code} ${body}`));
 
-    });
+    //     logWebSocket.close();
+
+    // }
 
 }

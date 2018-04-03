@@ -1,16 +1,16 @@
-
+# server where jail runs
 server-protocol: 'http'
 server-socket: 'localhost:3346'
-
+# where log processes
 log-protocol: 'ws'
 log-socket: 'localhost:3347'
-
+# authorization server
 auth-server-protocol: 'http'
 auth-server-socket: 'localhost:3001'
-
+# where images stored
 repository-protocol: 'http'
 repository-socket: 'localhost:3000'
-
+# current jail configuration
 jail-config: 'jmakefile.yml'
-cache-dir: '/home/md/.cache/jmaker-cli/'
+# to override default jail parameters
 profile: undefined

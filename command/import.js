@@ -1,64 +1,59 @@
 'use strict';
 
-// const request = require('request');
-// const chalk = require('chalk');
-// const JailConfig = require('../lib/jail-config.js');
-// const LogWebSocket = require('../lib/log-web-socket.js');
-// const fs = require('fs');
-// const path = require('path');
+const request = require('request');
+const chalk = require('chalk');
+const JailConfig = require('../lib/jail-config.js');
+const LogWebSocket = require('../lib/log-web-socket.js');
+const fs = require('fs');
+const path = require('path');
+const DependencyResolver = require('../lib/dependency-resolver.js');
 
 exports.command = 'import';
 
-exports.describe = 'import to server';
+exports.describe = 'import image from repository to server';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('server-socket', {
-            alias: ['server', 's'],
-        }).option('name', {
-            demandOption: true,
-        }).option('token-file', {
-            alias: 't'
+        .option('name', {
+            describe: 'name of image to import',
         });
 
 }
 
 exports.handler = async args => {
 
-    // let jailConfig = new JailConfig(args);
+    let jailConfig = new JailConfig(args);
 
-    // let repository = args['repository'] !== undefined ? args['repository'] : args['repository-socket'];
+    let name = jailConfig.name;
 
-    // let body = {
-    //     image: args['name'],
-    //     repository: repository,
-    // };
+    let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
+    let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
 
-    // if(args['token-file' !== undefined]) {
+    // get all images required for installation by specified one
+    let depRes = new DependencyResolver(serverRoot, repositoryRoot);
+    let deps = await depRes.resolve(name);
 
-    //     let tokenContent = fs.readFileSync(args['token-file']);
-    //     let tokenJson = JSON.parse(tokenContent);
-    //     body['token-json'] = tokenJson;
+    let stack = [ ...deps, name];
 
-    // }
+    // pipe images from repository to server
+    for(let image of stack) {
 
-    // request({
-    //     method: 'POST',
-    //     uri: `${args['server-protocol']}://${args['server-socket']}/images/push-to-repo`,
-    //     json: true,
-    //     timeout: null,
-    //     body: body,
-    // }, (error, response, body) => {
+        let fromParams = {
+            // method: 'GET',
+            uri: `${repositoryRoot}/images/${image}/data`
+        };
 
-    //     let code = response.statusCode;
+        let toParams = {
+            // headers: {
+            //     'Content-Type' : 'application/x-xz',
+            // },
+            // method: 'POST',
+            uri: `${serverRoot}/image-importer`,
+        }
 
-    //     if (code !== 200) {
+        request(fromParams).pipe(request.post(toParams));
 
-    //         console.log(chalk.red(`${code} ${body}`));
-
-    //     }
-
-    // });
+    }
 
 }

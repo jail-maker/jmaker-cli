@@ -3,7 +3,6 @@
 const request = require('request');
 const chalk = require('chalk');
 const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
 const fs = require('fs');
 const path = require('path');
 const DependencyResolver = require('../lib/dependency-resolver.js');
@@ -15,8 +14,8 @@ exports.describe = 'import image from repository to server';
 exports.builder = yargs => {
 
     return yargs
-        .option('name', {
-            describe: 'name of image to import',
+        .option('file', {
+            describe: 'name of image file to import',
         });
 
 }
@@ -25,35 +24,34 @@ exports.handler = async args => {
 
     let jailConfig = new JailConfig(args);
 
-    let name = jailConfig.name;
+    let inputFile = args['file'] !== undefined ? args['file'] : jailConfig.name + '.txz';
 
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
     let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
 
-    // get all images required for installation by specified one
-    let depRes = new DependencyResolver(serverRoot, repositoryRoot);
-    let deps = await depRes.resolve(name);
+    let toParams = {
+        headers : {
+            'content-type': 'application/x-xz',
+        },
+        method: 'POST',
+        uri: `${serverRoot}/image-importer`,
+    };
 
-    let stack = [ ...deps, name];
+    let input = path.resolve(inputFile);
+    let stream = fs.createReadStream(input);
 
-    // pipe images from repository to server
-    for(let image of stack) {
+    stream.pipe(
+        request(toParams, (error, response, body) => {
 
-        let fromParams = {
-            // method: 'GET',
-            uri: `${repositoryRoot}/images/${image}/data`
-        };
+            let code = response.statusCode;
 
-        let toParams = {
-            // headers: {
-            //     'Content-Type' : 'application/x-xz',
-            // },
-            // method: 'POST',
-            uri: `${serverRoot}/image-importer`,
-        }
+            if (code !== 200) {
 
-        request(fromParams).pipe(request.post(toParams));
+                console.log(chalk.red(`${code} ${body}`));
 
-    }
+            }
+
+        })
+    );
 
 }

@@ -9,46 +9,61 @@
 // const LogWebSocket = require('../lib/log-web-socket.js');
 // const path = require('path');
 
-// exports.command = 'login';
+const noneAuth = require('../auth/none.js');
+const basicAuth = require('../auth/basic.js');
+const jwtAuth = require('../auth/jwt.js');
 
-// exports.describe = 'aquire json web token';
+const arr = {
+    'none': noneAuth,
+    'basic': basicAuth,
+    'jwt': jwtAuth,
+};
 
-// exports.builder = yargs => {
+exports.command = 'login';
 
-//     return yargs
-//         .option('repository-socket', {
-//             demandOption: true,
-//             alias: ['repository', 'r'],
-//             describe: 'repository socket',
-//         });
+exports.describe = 'aquire json web token';
 
-// }
+exports.builder = yargs => {
 
-// exports.handler = async args => {
+    return yargs
+        .option('repository', {
+            demandOption: true,
+            alias: 'r',
+            describe: 'repository name',
+        })
+        .option('authorization', {
+            choices: ['none', 'basic', 'jwt'],
+            alias: 'a',
+            describe: 'authorization method',
+        });
 
-//     let jailConfig = new JailConfig(args);
+}
 
-//     let {name, password} = await inquirer.prompt([
-//         {prefix: '', name: 'name', message: 'name: ', type: 'input'},
-//         {prefix: '', name: 'password', message: 'password: ', type: 'password'}
-//     ]);
+exports.handler = async args => {
 
-//     let res = await prequest({
-//         uri: `${args['auth-server-protocol']}://${args['auth-server-socket']}`,
-//         method: 'GET',
-//         'auth': {
-//             'user': name,
-//             'pass': password,
-//             'sendImmediately': false,
-//         },
-//         json: true,
-//         body: {
-//             repository: args['repository-socket'],
-//         }
-//     });
+    // let jailConfig = new JailConfig(args);
 
-//     let tokenPath = path.resolve(args['token-file'])
-//     fsextra.ensureFileSync(tokenPath);
-//     fs.writeFileSync(tokenPath, JSON.stringify(res));
+    // let {name, password} = await inquirer.prompt([
+    //     {prefix: '', name: 'name', message: 'name: ', type: 'input'},
+    //     {prefix: '', name: 'password', message: 'password: ', type: 'password'}
+    // ]);
 
-// }
+    // let res = await prequest({
+    //     uri: `${args['auth-server-protocol']}://${args['auth-server-socket']}`,
+    //     method: 'GET',
+    //     'auth': {
+    //         'user': name,
+    //         'pass': password,
+    //         'sendImmediately': false,
+    //     },
+    //     json: true,
+    //     body: {
+    //         repository: args['repository-socket'],
+    //     }
+    // });
+
+    // let tokenPath = path.resolve(args['token-file'])
+    // fsextra.ensureFileSync(tokenPath);
+    // fs.writeFileSync(tokenPath, JSON.stringify(res));
+
+}

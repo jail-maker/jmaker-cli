@@ -42,14 +42,14 @@ exports.handler = async args => {
         };
 
         let toParams = {
-            headers: {
-                'Content-Type' : 'application/x-xz',
-            },
+            // headers: {
+            //     'Content-Type' : 'application/x-xz',
+            // },
             method: 'POST',
             uri: `${serverRoot}/image-importer`,
         }
 
-        request(fromParams).pipe(request.post(toParams));
+        request(fromParams).pipe(request(toParams));
 
     }
 

@@ -1,6 +1,7 @@
 'use strict';
 
 const request = require('request');
+const fs = require('fs');
 const chalk = require('chalk');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
@@ -47,10 +48,10 @@ exports.handler = async args => {
         if (code !== 200) {
 
             console.log(chalk.red(`${code} ${body}`));
+            logWebSocket.close();
 
         }
 
-        logWebSocket.close();
 
     });
 

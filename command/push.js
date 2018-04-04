@@ -1,12 +1,16 @@
 'use strict';
 
-const request = require('request');
-const chalk = require('chalk');
-const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const fs = require('fs');
-const path = require('path');
-const DependencyResolver = require('../lib/dependency-resolver.js');
+// const request = require('request');
+// const chalk = require('chalk');
+// const JailConfig = require('../lib/jail-config.js');
+// const LogWebSocket = require('../lib/log-web-socket.js');
+// const fs = require('fs');
+// const path = require('path');
+// const DependencyResolver = require('../lib/dependency-resolver.js');
+
+const push = require('../action/push.js');
+const auth = require('../action/auth.js');
+const pushAuth = require('../action/push-auth.js');
 
 exports.command = 'push';
 
@@ -20,6 +24,33 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
+    let res = undefined;
+    let auth = undefined;
+
+    do {
+
+        try {
+
+            push(args);
+            break;
+
+        } catch(e) {
+
+            if(e.status !== 401) {
+
+                throw e;
+
+            } else {
+
+                auth = auth();
+                res = pushAuth(args, auth);
+
+            }
+
+        }
+
+    } while(true);
+
     // let jailConfig = new JailConfig(args);
 
     // let name = jailConfig.name;
@@ -27,30 +58,19 @@ exports.handler = async args => {
     // let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
     // let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
 
-    // // get all images required for installation by specified one
-    // let depRes = new DependencyResolver(serverRoot, repositoryRoot);
-    // let deps = await depRes.resolve(name);
+    // let fromParams = {
+    //     method: 'GET',
+    //     uri: `${serverRoot}/images/${name}/exported`
+    // };
 
-    // let stack = [ ...deps, name];
-
-    // // pipe images from repository to server
-    // for(let image of stack) {
-
-    //     let fromParams = {
-    //         method: 'GET',
-    //         uri: `${repositoryRoot}/images/${image}/data`
-    //     };
-
-    //     let toParams = {
-    //         headers: {
-    //             'Content-Type' : 'application/x-xz',
-    //         },
-    //         method: 'POST',
-    //         uri: `${serverRoot}/image-importer`,
-    //     }
-
-    //     request(fromParams).pipe(request.post(toParams));
-
+    // let toParams = {
+    //     headers: {
+    //         'Content-Type' : 'application/x-xz',
+    //     },
+    //     method: 'POST',
+    //     uri: `${repositoryRoot}/images/`,
     // }
+
+    // request(fromParams).pipe(request.post(toParams));
 
 }

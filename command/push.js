@@ -1,8 +1,8 @@
 'use strict';
 
-const push = require('../request/push.js');
-const auth = require('../request/auth.js');
-const pushAuth = require('../request/push-auth.js');
+const pushNoAuth = require('../action/push-no-auth.js');
+const authJwtWebsm = require('../action/auth-jwt-websm.js');
+const pushAuth = require('../action/push-auth.js');
 
 exports.command = 'push';
 
@@ -14,7 +14,7 @@ exports.builder = yargs => {
 
 }
 
-exports.handler = async args => {
+exports.handler = args => {
 
     let res = undefined;
     let auth = undefined;
@@ -23,19 +23,37 @@ exports.handler = async args => {
 
         try {
 
-            push(args);
+            pushNoAuth(args);
             break;
 
         } catch(e) {
 
-            if(e.status !== 401) {
+            if(e.name !== 'RepositoryJwtAuthRequired') {
 
                 throw e;
 
             } else {
 
-                auth = auth();
-                res = pushAuth(args, auth);
+                auth = authJwtWebsm(args);
+
+                try {
+
+                    res = pushAuth(args, auth);
+                    break;
+
+                } catch(e) {
+
+                    if(e.name !== 'RepositoryJwtAuthFailed') {
+
+                        throw e;
+
+                    } else {
+
+                        console.log('Auth failed');
+
+                    }
+
+                }
 
             }
 

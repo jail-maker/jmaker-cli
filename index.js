@@ -2,7 +2,6 @@
 'use strict';
 
 const yargs = require('yargs');
-console.log(yargs);
 const fs = require('fs');
 const yaml = require('js-yaml');
 const Daemonize = require('daemonize');

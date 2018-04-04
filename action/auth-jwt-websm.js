@@ -19,8 +19,13 @@
 //     'jwt': jwtAuth,
 // };
 
-exports.handler = async args => {
+const readline = require('readline-sync');
 
+module.exports = (config) => {
+
+    let res = readline.question('user name: ');
+
+    return res;
     // let jailConfig = new JailConfig(args);
 
     // let {name, password} = await inquirer.prompt([

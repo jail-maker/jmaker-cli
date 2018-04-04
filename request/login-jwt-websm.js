@@ -19,26 +19,6 @@
 //     'jwt': jwtAuth,
 // };
 
-exports.command = 'login';
-
-exports.describe = 'aquire json web token';
-
-exports.builder = yargs => {
-
-    return yargs
-        .option('repository', {
-            demandOption: true,
-            alias: 'r',
-            describe: 'repository name',
-        });
-        // .option('authorization', {
-        //     choices: ['none', 'basic', 'jwt'],
-        //     alias: 'a',
-        //     describe: 'authorization method',
-        // });
-
-}
-
 exports.handler = async args => {
 
     // let jailConfig = new JailConfig(args);

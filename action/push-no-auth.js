@@ -6,7 +6,8 @@
  *      Conflict
  */
 
-const request = require('request');
+// const request = require('request');
+const request = require('request-promise');
 const JailConfig = require('../lib/jail-config.js');
 
 const Unauthorized = require('../error/unauthorized.js');
@@ -16,7 +17,7 @@ const Conflict = require('../error/conflict.js');
 module.exports = async (config) => {
 
     let jailConfig = new JailConfig(config);
-    let name = jailConfig.name;
+    let name = config['name'] != undefined ? config['name'] : jailConfig.name;
 
     let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
     let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
@@ -36,33 +37,35 @@ module.exports = async (config) => {
 
     let handlerFrom = (error, response, body) => {
 
-        if(response.statusCode == 404) {
+        console.log('from');
+        // if(response.statusCode == 404) {
 
-            throw new NotFound(body);
+        //     throw new NotFound(body);
 
-        } else if(response.statusCode < 200 || response.statusCode >= 300) {
+        // } else if(response.statusCode < 200 || response.statusCode >= 300) {
 
-            throw new Error(error);
+        //     throw new Error(error);
 
-        }
+        // }
 
     }
 
     let handlerTo = (error, response, body) => {
 
-        if(response.statusCode == 401) {
+        console.log(this);
+        // if(response.statusCode == 401) {
 
-            throw new Unauthorized('JWT authorization required', 'jwt');
+        //     throw new Unauthorized('JWT authorization required', 'jwt');
 
-        } else if(response.statusCode == 409) {
+        // } else if(response.statusCode == 409) {
 
-            throw new Conflict(body);
+        //     throw new Conflict(body);
 
-        } else if(response.statusCode < 200 || response.statusCode >= 300) {
+        // } else if(response.statusCode < 200 || response.statusCode >= 300) {
 
-            throw new Error();
+        //     throw new Error();
 
-        }
+        // }
 
     }
 

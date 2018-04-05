@@ -48,14 +48,9 @@ exports.handler = async args => {
                         console.log('Auth failed');
                         continue;
 
-                    } else if(e.name === 'Conflict') {
+                    } else if(['Conflict', 'NotFound'].includes(e.name)) {
 
-                        console.log('Image Already Exists');
-                        break;
-
-                    } else if(e.name === 'NotFound') {
-
-                        console.log('Image Not Found');
+                        console.log(e.message);
                         break;
 
                     }
@@ -64,14 +59,9 @@ exports.handler = async args => {
 
                 }
 
-            } else if(e.name === 'Exists') {
+            } else if(['Conflict', 'NotFound'].includes(e.name)) {
 
-                console.log('Image Already Exists');
-                break;
-
-            } else if(e.name === 'NotFound') {
-
-                console.log('Image Not Found');
+                console.log(e.message);
                 break;
 
             }

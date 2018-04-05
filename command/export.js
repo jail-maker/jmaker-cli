@@ -13,7 +13,7 @@ exports.describe = 'export image from server to repository';
 exports.builder = yargs => {
 
     return yargs
-        .option('image', {
+        .option('name', {
             describe: 'name of image to export',
         })
         .option('file', {
@@ -27,7 +27,7 @@ exports.handler = async args => {
 
     let jailConfig = new JailConfig(args);
 
-    let image = args['image'] !== undefined ? args['image'] : jailConfig.name;
+    let image = args['name'] !== undefined ? args['name'] : jailConfig.name;
 
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 

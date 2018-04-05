@@ -21,7 +21,7 @@
 
 const readline = require('readline-sync');
 
-module.exports = (config) => {
+module.exports = async (config) => {
 
     let res = readline.question('user name: ');
 

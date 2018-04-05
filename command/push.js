@@ -10,52 +10,67 @@ exports.describe = 'push image from server to repository';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('name', {
+            describe: 'name of image to push'
+        })
+        // .option('auth', {
+        //     describe: 'use authorization',
+        //     choices: ['jwt'],
+        //     default: 'jwt',
+        // });
 
 }
 
-exports.handler = args => {
+exports.handler = async args => {
 
-    let res = undefined;
-    let auth = undefined;
+    // switch(args['auth']) {
+
+    //     case 'jwt': {
+        
+        
+    //     }
+    
+    // }
 
     do {
 
         try {
 
-            pushNoAuth(args);
+            // try push if no authorization required
+            await pushNoAuth(args);
             break;
 
         } catch(e) {
 
-            if(e.name !== 'RepositoryJwtAuthRequired') {
-
-                throw e;
-
-            } else {
-
-                auth = authJwtWebsm(args);
+            // if jwt authorization required
+            if(e.name === 'JwtAuthRequired') {
 
                 try {
 
-                    res = pushAuth(args, auth);
+                    // accuire jwt
+                    await authJwtWebsm(args);
+
+                    // push using accuired jwt
+                    await pushAuth(args);
                     break;
 
                 } catch(e) {
 
-                    if(e.name !== 'RepositoryJwtAuthFailed') {
-
-                        throw e;
-
-                    } else {
+                    if(e.name === 'AuthFailed') {
 
                         console.log('Auth failed');
+                        continue;
 
                     }
+
+                    throw e;
 
                 }
 
             }
+
+            throw e;
 
         }
 

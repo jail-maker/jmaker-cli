@@ -2,12 +2,12 @@
 
 // const request = require('request');
 // const chalk = require('chalk');
-const RepositoryJwtAuthFailed = require('../error/repository-jwt-auth-failed.js');
+const JwtAuthFailed = require('../error/auth-failed.js');
 
-module.exports = (config, auth) => {
+module.exports = async (config, auth) => {
 
     if(auth == 'user') return 'ok';
-    else throw new RepositoryJwtAuthFailed();
+    else throw new AuthFailed();
     // let name = jailConfig.name;
 
     // let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;

@@ -4,10 +4,9 @@
 // const chalk = require('chalk');
 const JwtAuthFailed = require('../error/auth-failed.js');
 
-module.exports = async (config, auth) => {
+module.exports = async config => {
 
-    if(auth == 'user') return 'ok';
-    else throw new AuthFailed();
+    throw new AuthFailed();
     // let name = jailConfig.name;
 
     // let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;

@@ -13,25 +13,11 @@ exports.builder = yargs => {
     return yargs
         .option('name', {
             describe: 'name of image to push'
-        })
-        // .option('auth', {
-        //     describe: 'use authorization',
-        //     choices: ['jwt'],
-        //     default: 'jwt',
-        // });
+        });
 
 }
 
 exports.handler = async args => {
-
-    // switch(args['auth']) {
-
-    //     case 'jwt': {
-        
-        
-    //     }
-    
-    // }
 
     do {
 
@@ -43,6 +29,7 @@ exports.handler = async args => {
 
         } catch(e) {
 
+            console.log(e);
             // if jwt authorization required
             if(e.name === 'JwtAuthRequired') {
 
@@ -62,11 +49,31 @@ exports.handler = async args => {
                         console.log('Auth failed');
                         continue;
 
+                    } else if(e.name === 'Exists') {
+
+                        console.log('Image Already Exists');
+                        break;
+
+                    } else if(e.name === 'NotFound') {
+
+                        console.log('Image Not Found');
+                        break;
+
                     }
 
                     throw e;
 
                 }
+
+            } else if(e.name === 'Exists') {
+
+                console.log('Image Already Exists');
+                break;
+
+            } else if(e.name === 'NotFound') {
+
+                console.log('Image Not Found');
+                break;
 
             }
 

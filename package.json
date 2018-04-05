@@ -19,6 +19,7 @@
     "dependencies": {
         "chalk": "^2.3.0",
         "daemonize": "jail-maker/daemonize.js#0e59a88",
+        "find-cache-dir": "^1.0.0",
         "fs-extra": "^5.0.0",
         "inquirer": "^5.2.0",
         "js-yaml": "^3.11.0",

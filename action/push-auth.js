@@ -2,11 +2,11 @@
 
 // const request = require('request');
 // const chalk = require('chalk');
-const JwtAuthFailed = require('../error/auth-failed.js');
+const Forbidden = require('../error/forbidden.js');
 
 module.exports = async config => {
 
-    throw new AuthFailed();
+    throw new Forbidden();
     // let name = jailConfig.name;
 
     // let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;

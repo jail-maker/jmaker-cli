@@ -1,16 +1,17 @@
 'use strict';
 /**
  * throws 
- *      JwtAuthRequired
+ *      Unauthorized
  *      NotFound
- *      Exists
+ *      Conflict
  */
 
 const request = require('request');
 const JailConfig = require('../lib/jail-config.js');
-const JwtAuthRequired = require('../error/jwt-auth-required.js');
+
+const Unauthorized = require('../error/unauthorized.js');
 const NotFound = require('../error/not-found.js');
-const exists = require('../error/exists.js');
+const Conflict = require('../error/conflict.js');
 
 module.exports = async (config) => {
 
@@ -33,39 +34,39 @@ module.exports = async (config) => {
         uri: `${repositoryRoot}/image-importer`,
     }
 
-    request(fromParams, handlerFrom).pipe(request(toParams), handlerTo);
+    let handlerFrom = (error, response, body) => {
 
-}
+        if(response.statusCode == 404) {
 
-let handlerFrom = (error, response, body) => {
+            throw new NotFound(body);
 
-    if(response.statusCode == 404) {
+        } else if(response.statusCode < 200 || response.statusCode >= 300) {
 
-        throw new NotFound();
+            throw new Error(error);
 
-    } else if(response.statusCode < 200 || response.statusCode >= 300) {
-
-        throw new Error();
+        }
 
     }
 
-}
+    let handlerTo = (error, response, body) => {
 
-let handlerTo = (error, response, body) => {
+        if(response.statusCode == 401) {
 
-    if(response.statusCode == 401) {
+            throw new Unauthorized('JWT authorization required', 'jwt');
 
-        throw JwtAuthRequired();
+        } else if(response.statusCode == 409) {
 
-    } else if(response.statusCode == 409) {
+            throw new Conflict(body);
 
-        throw Exists();
+        } else if(response.statusCode < 200 || response.statusCode >= 300) {
 
-    } else if(response.statusCode < 200 || response.statusCode >= 300) {
+            throw new Error();
 
-        throw new Error(error);
+        }
 
     }
+
+    request(fromParams, handlerFrom).pipe(request(toParams, handlerTo));
 
 }
 

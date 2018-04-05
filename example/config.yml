@@ -6,10 +6,12 @@ log-protocol: 'ws'
 log-socket: 'localhost:3347'
 # authorization server
 auth-server-protocol: 'http'
-auth-server-socket: 'localhost:3001'
+auth-server-socket: 'localhost:3002'
 # where images stored
+# repository-protocol: 'http'
+# repository-socket: 'localhost:3000'
 repository-protocol: 'http'
-repository-socket: 'localhost:3000'
+repository-socket: 'localhost:3001'
 # current jail configuration
 jail-config: 'jmakefile.yml'
 # to override default jail parameters

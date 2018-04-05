@@ -29,9 +29,8 @@ exports.handler = async args => {
 
         } catch(e) {
 
-            console.log(e);
             // if jwt authorization required
-            if(e.name === 'JwtAuthRequired') {
+            if(e.name == 'Unauthorized' && e.type == 'jwt') {
 
                 try {
 
@@ -44,12 +43,12 @@ exports.handler = async args => {
 
                 } catch(e) {
 
-                    if(e.name === 'AuthFailed') {
+                    if(e.name === 'Forbidden') {
 
                         console.log('Auth failed');
                         continue;
 
-                    } else if(e.name === 'Exists') {
+                    } else if(e.name === 'Conflict') {
 
                         console.log('Image Already Exists');
                         break;

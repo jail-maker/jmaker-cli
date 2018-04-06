@@ -33,53 +33,63 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    // catch connection exceptions
     try {
 
-        do {
+        // try push if no authorization required
+        console.log('push without authorization');
+        await pushNoAuth(args);
+
+    } catch(e) {
+
+        if(e.name == 'HttpError') {
+
+            if(e.code == 401) { // if authorization required
+
+                await handlePushAuthorized(args);
+
+            } else if([400, 409].includes(e.code)) {
+
+                console.log(e.message);
+
+            } else {
+
+                console.log(`push without authorization: code: ${e.code}, ${e.message}`);
+
+            }
+
+        } 
+
+        throw e;
+
+    }
+
+
+}
+
+async function handlePushAuthorized(args) {
+
+    let i = 0;
+
+    do {
+
+        if(i) {
+
+            console.log('accuiring jwt');
 
             try {
 
-                // try push if no authorization required
-                await pushNoAuth(args);
-                break;
+                await authJwtWebsm(args); // accuire jwt if use of exiting jwt failed
 
             } catch(e) {
 
-                // if jwt authorization required
-                if(e.name == 'Unauthorized' && e.type == 'jwt') {
+                if(e.name == 'HttpError') {
 
-                    try {
+                    if(e.code == 401) {
 
-                        // accuire jwt
-                        await authJwtWebsm(args);
-
-                        // push using accuired jwt
-                        await pushAuth(args);
-                        break;
-
-                    } catch(e) {
-
-                        if(e.name === 'Forbidden') {
-
-                            console.log('Auth failed');
-                            continue;
-
-                        } else if(['Conflict', 'NotFound'].includes(e.name)) {
-
-                            console.log(e.message);
-                            break;
-
-                        }
-
-                        throw e;
+                        console.log('authorization failed');
+                        continue;
 
                     }
-
-                } else if(['Conflict', 'NotFound'].includes(e.name)) {
-
-                    console.log(e.message);
-                    break;
 
                 }
 
@@ -87,19 +97,45 @@ exports.handler = async args => {
 
             }
 
-        } while(true);
+        } else console.log('use existing jwt');
 
-    } catch(e) {
+        ++i;
 
-        if(e.name == 'RequestError') {
+        try {
 
-            console.log('Connection failed');
-            return;
+            console.log('push authorized');
+            await pushAuth(args); // push using accuired jwt
+            break;
+
+        } catch(e) {
+
+            if(e.name = 'HttpError') {
+
+                if(e.code == 401) { // if unauthorized
+
+                    console.log(e.msg);
+                    continue;
+
+                } else if ([400, 409]) { // if bad image format or image exists
+
+                    console.log(e.msg);
+                    break;
+
+                } else {
+
+                    console.log(`push authorized: code: ${e.code}, ${e.msg}`);
+
+                }
+
+            }
+
+            throw e;
 
         }
 
         throw e;
 
-    }
+    } while(true);
+
 
 }

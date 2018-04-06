@@ -1,18 +1,12 @@
 'use strict';
-/**
- * throws 
- *      Unauthorized
- *      NotFound
- *      Conflict
- */
 
 const request = require('request');
-// const request = require('request-promise');
 const JailConfig = require('../lib/jail-config.js');
 
-const Unauthorized = require('../error/unauthorized.js');
-const NotFound = require('../error/not-found.js');
-const Conflict = require('../error/conflict.js');
+// const Unauthorized = require('../error/unauthorized.js');
+// const NotFound = require('../error/not-found.js');
+// const Conflict = require('../error/conflict.js');
+const HttpError = require('../error/http-error.js');
 
 module.exports = async (config) => {
 
@@ -40,17 +34,16 @@ module.exports = async (config) => {
         let handlerFrom = (error, response, body) => {
 
             if(error) rej(new Error(error));
-            else if(response.statusCode == 404) rej(new NotFound(body));
-            else if(response.statusCode < 200 || response.statusCode >= 300) rej(new Error(body));
+            else if(response.statusCode < 200 || response.statusCode >= 300) 
+                rej(new HttpError({msg: body, code: response.statusCode}));
 
         }
 
         let handlerTo = (error, response, body) => {
 
             if(error) rej(new Error(error));
-            else if(response.statusCode == 401) rej(new Unauthorized('JWT authorization required', 'jwt'));
-            else if(response.statusCode == 409) rej(new Conflict(body));
-            else if(response.statusCode < 200 || response.statusCode >= 300) rej(new Error(body));
+            else if(response.statusCode < 200 || response.statusCode >= 300) 
+                rej(new HttpError({msg: body, code: response.statusCode}));
 
             res();
 

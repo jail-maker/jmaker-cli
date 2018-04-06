@@ -6,8 +6,8 @@
  *      Conflict
  */
 
-// const request = require('request');
-const request = require('request-promise');
+const request = require('request');
+// const request = require('request-promise');
 const JailConfig = require('../lib/jail-config.js');
 
 const Unauthorized = require('../error/unauthorized.js');
@@ -16,60 +16,49 @@ const Conflict = require('../error/conflict.js');
 
 module.exports = async (config) => {
 
-    let jailConfig = new JailConfig(config);
-    let name = config['name'] != undefined ? config['name'] : jailConfig.name;
+    return new Promise((res, rej) => {
 
-    let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
-    let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
+        let jailConfig = new JailConfig(config);
+        let name = config['name'] != undefined ? config['name'] : jailConfig.name;
 
-    let fromParams = {
-        method: 'GET',
-        uri: `${serverRoot}/images/${name}/exported`
-    };
+        let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
+        let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
 
-    let toParams = {
-        headers: {
-            'Content-Type' : 'application/x-xz',
-        },
-        method: 'POST',
-        uri: `${repositoryRoot}/image-importer`,
-    }
+        let fromParams = {
+            method: 'GET',
+            uri: `${serverRoot}/images/${name}/exported`
+        };
 
-    let handlerFrom = (error, response, body) => {
+        let toParams = {
+            headers: {
+                'Content-Type' : 'application/x-xz',
+            },
+            method: 'POST',
+            uri: `${repositoryRoot}/image-importer`,
+        }
 
-        console.log('from');
-        // if(response.statusCode == 404) {
+        let handlerFrom = (error, response, body) => {
 
-        //     throw new NotFound(body);
+            if(error) rej(new Error(error));
+            else if(response.statusCode == 404) rej(new NotFound(body));
+            else if(response.statusCode < 200 || response.statusCode >= 300) rej(new Error(body));
 
-        // } else if(response.statusCode < 200 || response.statusCode >= 300) {
+        }
 
-        //     throw new Error(error);
+        let handlerTo = (error, response, body) => {
 
-        // }
+            if(error) rej(new Error(error));
+            else if(response.statusCode == 401) rej(new Unauthorized('JWT authorization required', 'jwt'));
+            else if(response.statusCode == 409) rej(new Conflict(body));
+            else if(response.statusCode < 200 || response.statusCode >= 300) rej(new Error(body));
 
-    }
+            res();
 
-    let handlerTo = (error, response, body) => {
+        }
 
-        console.log(this);
-        // if(response.statusCode == 401) {
+        request(fromParams, handlerFrom).pipe(request(toParams, handlerTo));
 
-        //     throw new Unauthorized('JWT authorization required', 'jwt');
-
-        // } else if(response.statusCode == 409) {
-
-        //     throw new Conflict(body);
-
-        // } else if(response.statusCode < 200 || response.statusCode >= 300) {
-
-        //     throw new Error();
-
-        // }
-
-    }
-
-    request(fromParams, handlerFrom).pipe(request(toParams, handlerTo));
+    });
 
 }
 

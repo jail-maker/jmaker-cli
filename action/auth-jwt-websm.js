@@ -10,7 +10,7 @@ const findCacheDir = require('find-cache-dir');
 
 module.exports = async (config) => {
 
-    let jailConfig = new JailConfig(args);
+    let jailConfig = new JailConfig(config);
 
     let {name, password} = await inquirer.prompt([
         {name: 'name', message: 'name: ', type: 'input'},
@@ -31,7 +31,9 @@ module.exports = async (config) => {
         }
     });
 
+
     let tokenPath = findCacheDir({name: 'token.json'})
+    console.log(tokenPath + '---');
     fsextra.ensureFileSync(tokenPath);
     fs.writeFileSync(tokenPath, JSON.stringify(res));
 

@@ -2,10 +2,6 @@
 
 const request = require('request');
 const JailConfig = require('../lib/jail-config.js');
-
-// const Unauthorized = require('../error/unauthorized.js');
-// const NotFound = require('../error/not-found.js');
-// const Conflict = require('../error/conflict.js');
 const HttpError = require('../error/http-error.js');
 
 module.exports = async (config) => {

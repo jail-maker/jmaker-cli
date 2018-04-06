@@ -35,9 +35,13 @@ module.exports = async (config) => {
             }
         });
 
+        let tokenPath = findCacheDir({name: 'token.json'})
+        fsextra.ensureFileSync(tokenPath);
+        fs.writeFileSync(tokenPath, JSON.stringify(res));
+
     } catch(e) {
 
-        if(e.name = 'StatusCodeError') {
+        if(e.name = 'StatusCodeError' && e.statusCode == 401) {
 
             throw new HttpError({msg: 'authorization required', code: 401})
 
@@ -45,10 +49,5 @@ module.exports = async (config) => {
 
         throw error;
     }
-
-
-    let tokenPath = findCacheDir({name: 'token.json'})
-    fsextra.ensureFileSync(tokenPath);
-    fs.writeFileSync(tokenPath, JSON.stringify(res));
 
 }

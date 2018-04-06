@@ -57,12 +57,9 @@ exports.handler = async args => {
 
             }
 
-        } 
-
-        throw e;
+        } else throw e;
 
     }
-
 
 }
 

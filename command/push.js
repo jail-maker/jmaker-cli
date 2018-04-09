@@ -35,7 +35,7 @@ exports.handler = async args => {
 
             } else {
 
-                console.log(`push without authorization: code: ${e.code}, ${e.message}`);
+                console.log(`${e.code}, ${e.message}`);
 
             }
 
@@ -100,19 +100,17 @@ async function handlePushAuthorized(args) {
                     console.log(`push authorized: ${e.code}, ${e.msg}`);
                     break;
 
-                } else {
+                } 
 
-                    console.log(`push authorized: ${e.code}, ${e.msg}`);
-
-                }
+                // if other error
+                console.log(`push authorized: ${e.code}, ${e.msg}`);
+                throw e;
 
             }
 
             throw e;
 
         }
-
-        throw e;
 
     } while(true);
 

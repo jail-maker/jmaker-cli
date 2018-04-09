@@ -39,7 +39,7 @@ module.exports = async args => {
                 uri: `${serverRoot}/image-importer`,
             }
 
-            request(fromParams, (error, response, body) => {
+            request(fromParams, (err, res, body) => {
 
                 if(err) rej(new Error(body));
                 let code = res.statusCode;
@@ -52,6 +52,8 @@ module.exports = async args => {
                 let code = res.statusCode;
                 if(verifyErrorCode(code))
                     rej(new HttpError({msg: body, code: code}));
+
+                res();
 
             });
 

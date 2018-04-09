@@ -3,58 +3,68 @@
 const request = require('request');
 const JailConfig = require('../lib/jail-config.js');
 const findCacheDir = require('find-cache-dir');
-
 const fs = require('fs');
-
+const fse = require('fs-extra');
 const HttpError = require('../error/http-error.js');
+const verifyErrorCode = require('../lib/verify-error-code.js');
 
 module.exports = async (config) => {
 
-    return new Promise((res, rej) => {
+    let jailConfig = new JailConfig(config);
+    let name = config['name'] != undefined ? config['name'] : jailConfig.name;
 
-        let jailConfig = new JailConfig(config);
-        let name = config['name'] != undefined ? config['name'] : jailConfig.name;
+    let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
+    let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
 
-        let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
-        let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
+    let fromParams = {
+        method: 'GET',
+        uri: `${serverRoot}/images/${name}/exported`
+    };
 
-        let fromParams = {
-            method: 'GET',
-            uri: `${serverRoot}/images/${name}/exported`
-        };
+    let tokenPath = findCacheDir({name: 'token.json'})
+    fse.ensureFileSync(tokenPath);
 
-        let tokenPath = findCacheDir({name: 'token.json'})
-        let json = JSON.parse(fs.readFileSync(tokenPath));
-        let jwt = json['authorization-token'];
+    let json = {};
+    try {
 
-        let toParams = {
-            headers: {
-                'Content-Type' : 'application/x-xz',
-                'Authorization' : 'Bearer ' + jwt,
-            },
-            method: 'POST',
-            uri: `${repositoryRoot}/image-importer`,
-        }
+        json = JSON.parse(fs.readFileSync(tokenPath));
 
-        let handlerFrom = (error, response, body) => {
+    } catch(e) {
 
-            if(error) rej(new Error(error));
-            else if(response.statusCode < 200 || response.statusCode >= 300) 
-                rej(new HttpError({msg: body, code: response.statusCode}));
+        if(e.name != 'SyntaxError') throw e;
 
-        }
+    }
 
-        let handlerTo = (error, response, body) => {
+    let jwt = json['authorization-token'];
 
-            if(error) rej(new Error(error));
-            else if(response.statusCode < 200 || response.statusCode >= 300) 
-                rej(new HttpError({msg: body, code: response.statusCode}));
+    let toParams = {
+        headers: {
+            'Content-Type' : 'application/x-xz',
+            'Authorization' : 'Bearer ' + jwt,
+        },
+        method: 'POST',
+        uri: `${repositoryRoot}/image-importer`,
+    }
 
-            res();
+    return new Promise((resolve, reject) => {
 
-        }
+        request(fromParams, (err, res, body) => {
 
-        request(fromParams, handlerFrom).pipe(request(toParams, handlerTo));
+            if(err) reject(new Error(body));
+            let code = res.statusCode;
+            if(verifyErrorCode(code))
+                reject(new HttpError({msg: body, code: code}));
+
+        }).pipe(request(toParams, (err, res, body) => {
+
+            if(err) reject(new Error(body));
+            let code = res.statusCode;
+            if(verifyErrorCode(code))
+                reject(new HttpError({msg: body, code: code}));
+
+            resolve();
+
+        }));
 
     });
 

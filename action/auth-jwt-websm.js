@@ -8,10 +8,8 @@ const JailConfig = require('../lib/jail-config.js');
 
 const findCacheDir = require('find-cache-dir');
 
-const HttpError = require('../error/http-error.js');
-
 /**
- * throws StatusCodeError(code = 401)
+ * throws HttpError(code = 401)
  */
 
 module.exports = async (config) => {
@@ -45,7 +43,7 @@ module.exports = async (config) => {
 
     } catch(e) {
 
-        if(e.name = 'StatusCodeError' && e.statusCode == 401) {
+        if(e.name = 'HttpError' && e.statusCode == 401) {
 
             throw new HttpError({msg: 'authorization required', code: 401})
 

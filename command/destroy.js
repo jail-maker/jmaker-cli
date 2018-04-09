@@ -1,7 +1,7 @@
 'use strict';
 
 
-const destroyImage = require('../action/destroy-image.js');
+const imageDestroy = require('../action/image-destroy.js');
 
 exports.command = 'destroy';
 
@@ -15,6 +15,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await destroyImage(args);
+    await imageDestroy(args);
 
 }

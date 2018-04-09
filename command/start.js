@@ -1,6 +1,6 @@
 'use strict';
 
-const startImage = require('../action/start-jail.js');
+const jailStart = require('../action/jail-start.js');
 
 exports.command = 'start';
 
@@ -14,6 +14,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await startJail(args);
+    await jailStart(args);
 
 }

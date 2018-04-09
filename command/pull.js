@@ -1,6 +1,6 @@
 'use strict';
 
-const pullImage = require('../action/pull-image.js');
+const imagePull = require('../action/image-pull.js');
 
 exports.command = 'pull';
 
@@ -14,6 +14,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await pullImage(args);
+    await imagePull(args);
 
 }

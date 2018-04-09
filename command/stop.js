@@ -1,6 +1,6 @@
 'use strict';
 
-const stopImage = require('../action/stop-jail.js');
+const jailStop = require('../action/jail-stop.js');
 
 exports.command = 'stop';
 
@@ -14,6 +14,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await stopJail(args);
+    await jailStop(args);
 
 }

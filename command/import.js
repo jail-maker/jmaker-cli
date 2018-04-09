@@ -1,6 +1,6 @@
 'use strict';
 
-const importImage = require('../action/import-image.js');
+const imageImport = require('../action/image-import.js');
 
 exports.command = 'import';
 
@@ -17,6 +17,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await importImage(args);
+    await imageImport(args);
 
 }

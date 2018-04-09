@@ -1,8 +1,8 @@
 'use strict';
 
-const pushNoAuth = require('../action/push-no-auth.js');
+const imagePushNoAuth = require('../action/push-no-auth.js');
 const authJwtWebsm = require('../action/auth-jwt-websm.js');
-const pushAuth = require('../action/push-auth.js');
+const imagePushAuth = require('../action/push-auth.js');
 
 exports.command = 'push';
 
@@ -23,7 +23,7 @@ exports.handler = async args => {
 
         // try push if no authorization required
         console.log('push without authorization');
-        await pushNoAuth(args);
+        await imagePushNoAuth(args);
 
     } catch(e) {
 
@@ -87,7 +87,7 @@ async function handlePushAuthorized(args) {
         try {
 
             console.log('push authorized');
-            await pushAuth(args); // push using accuired jwt
+            await imagePushAuth(args); // push using accuired jwt
             break;
 
         } catch(e) {

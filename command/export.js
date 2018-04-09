@@ -1,6 +1,6 @@
 'use strict';
 
-const destroyImage = require('../action/destroy-image.js');
+const imageExport = require('../action/image-export.js');
 
 exports.command = 'export';
 
@@ -21,6 +21,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await destroyImage(args);
+    await imageExport(args);
 
 }

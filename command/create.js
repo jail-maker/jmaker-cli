@@ -1,6 +1,6 @@
 'use strict';
 
-const createImage = require('../action/create-image.js');
+const imageCreate = require('../action/image-create.js');
 
 exports.command = 'create';
 
@@ -14,6 +14,6 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await createImage(args);
+    await imageCreate(args);
 
 }

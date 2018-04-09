@@ -3,20 +3,6 @@
 const pushNoAuth = require('../action/push-no-auth.js');
 const authJwtWebsm = require('../action/auth-jwt-websm.js');
 const pushAuth = require('../action/push-auth.js');
-/**
- * if (it's possible to push without authorization) {
- *      do so
- * } else if (jwt authorization required) {
- *      accuire jwt from auth-server;
- *
- *      if(basic auth required) {
- *           enter username password, accuire token
- *      }
- *
- *      push to repository using jwt;
- *
- * }
- */
 
 exports.command = 'push';
 
@@ -113,7 +99,7 @@ async function handlePushAuthorized(args) {
                     console.log(e.msg);
                     continue;
 
-                } else if ([400, 409]) { // if bad image format or image exists
+                } else if ([400, 409].includes(e.code)) { // if bad image format or image exists
 
                     console.log(e.msg);
                     break;
@@ -133,6 +119,5 @@ async function handlePushAuthorized(args) {
         throw e;
 
     } while(true);
-
 
 }

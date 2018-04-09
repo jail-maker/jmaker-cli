@@ -12,10 +12,7 @@ exports.describe = 'run jail';
 
 exports.builder = yargs => {
 
-    return yargs
-        .option('name', {
-            
-        });
+    return yargs;
 
 }
 

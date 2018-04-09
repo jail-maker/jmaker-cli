@@ -1,38 +1,44 @@
 'use strict';
 
-const request = require('request');
-const chalk = require('chalk');
+const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
 const fs = require('fs');
 const path = require('path');
 
 module.exports = async args => {
 
-    let jailConfig = new JailConfig(args);
+    return new Promise((res, rej) => {
 
-    let image = args['name'] !== undefined ? args['name'] : jailConfig.name;
+        let jailConfig = new JailConfig(args);
 
-    let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
+        let image = args['name'] !== undefined ? args['name'] : jailConfig.name;
 
-    let fromParams = {
-        method: 'GET',
-        uri: `${serverRoot}/images/${image}/exported`,
-    };
+        let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 
-    let output = path.resolve(args['file']);
+        let fromParams = {
+            method: 'GET',
+            uri: `${serverRoot}/images/${image}/exported`,
+        };
 
-    let stream = fs.createWriteStream(output);
+        let output = path.resolve(args['file']);
 
-    request(fromParams , (error, response, body) => {
+        let stream = fs.createWriteStream(output);
 
-        let code = response.statusCode;
+        request(fromParams , (error, response, body) => {
 
-        if (code !== 200) {
+            if(error) rej(new Error(error));
+            let code = response.statusCode;
 
-            console.log(chalk.red(`${code} ${body}`));
+            if(code != 200) {
 
-        }
+                rej(new StatusCodeError({msg: response.body, code: code}));
 
-    }).pipe(stream);
+            }
+
+        }).pipe(stream);
+
+        res();
+
+    });
 
 }

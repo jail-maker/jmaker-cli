@@ -9,36 +9,40 @@ const DependencyResolver = require('../lib/dependency-resolver.js');
 
 module.exports = async args => {
 
-    let jailConfig = new JailConfig(args);
+    return new Promise((res, rej) => {
 
-    let inputFile = args['file'] !== undefined ? args['file'] : jailConfig.name + '.txz';
+        let jailConfig = new JailConfig(args);
 
-    let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
-    let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
+        let inputFile = args['file'] !== undefined ? args['file'] : jailConfig.name + '.txz';
 
-    let toParams = {
-        headers : {
-            'content-type': 'application/x-xz',
-        },
-        method: 'POST',
-        uri: `${serverRoot}/image-importer`,
-    };
+        let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
+        let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
 
-    let input = path.resolve(inputFile);
-    let stream = fs.createReadStream(input);
+        let toParams = {
+            headers : {
+                'content-type': 'application/x-xz',
+            },
+            method: 'POST',
+            uri: `${serverRoot}/image-importer`,
+        };
 
-    stream.pipe(
-        request(toParams, (error, response, body) => {
+        let input = path.resolve(inputFile);
+        let stream = fs.createReadStream(input);
 
-            let code = response.statusCode;
+        stream.pipe(
+            request(toParams, (error, response, body) => {
 
-            if (code !== 200) {
+                if (code !== 200) {
 
-                console.log(chalk.red(`${code} ${body}`));
+                    rej(new StatusCodeError({msg: body, code: response.statusCode}));
 
-            }
+                }
 
-        })
-    );
+            })
+        );
+
+        res();
+
+    });
 
 }

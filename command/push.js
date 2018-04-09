@@ -1,8 +1,8 @@
 'use strict';
 
-const imagePushNoAuth = require('../action/push-no-auth.js');
+const imagePushNoAuth = require('../action/image-push-no-auth.js');
+const imagePushAuth = require('../action/image-push-auth.js');
 const authJwtWebsm = require('../action/auth-jwt-websm.js');
-const imagePushAuth = require('../action/push-auth.js');
 
 exports.command = 'push';
 
@@ -32,10 +32,6 @@ exports.handler = async args => {
             if(e.code == 401) { // if authorization required
 
                 await handlePushAuthorized(args);
-
-            } else if([400, 409].includes(e.code)) {
-
-                console.log(e.message);
 
             } else {
 
@@ -101,12 +97,12 @@ async function handlePushAuthorized(args) {
 
                 } else if ([400, 409].includes(e.code)) { // if bad image format or image exists
 
-                    console.log(e.msg);
+                    console.log(`push authorized: ${e.code}, ${e.msg}`);
                     break;
 
                 } else {
 
-                    console.log(`push authorized: code: ${e.code}, ${e.msg}`);
+                    console.log(`push authorized: ${e.code}, ${e.msg}`);
 
                 }
 

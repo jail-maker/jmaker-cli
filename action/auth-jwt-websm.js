@@ -10,6 +10,10 @@ const findCacheDir = require('find-cache-dir');
 
 const HttpError = require('../error/http-error.js');
 
+/**
+ * throws StatusCodeError(code = 401)
+ */
+
 module.exports = async (config) => {
 
     let jailConfig = new JailConfig(config);
@@ -48,6 +52,7 @@ module.exports = async (config) => {
         }
 
         throw error;
+
     }
 
 }

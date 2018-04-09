@@ -7,6 +7,7 @@ const LogWebSocket = require('../lib/log-web-socket.js');
 const fs = require('fs');
 const path = require('path');
 const DependencyResolver = require('../lib/dependency-resolver.js');
+const verifyErrorCode = require('../lib/verify-error-code.js');
 
 module.exports = async args => {
 
@@ -23,24 +24,39 @@ module.exports = async args => {
 
     let stack = [ ...deps, name];
 
-    // pipe images from repository to server
-    for(let image of stack) {
+    return new Promise((res, rej) => {
 
-        let fromParams = {
-            method: 'GET',
-            uri: `${repositoryRoot}/images/${image}/data`
-        };
+        // pipe images from repository to server
+        for(let image of stack) {
 
-        let toParams = {
-            // headers: {
-            //     'Content-Type' : 'application/x-xz',
-            // },
-            method: 'POST',
-            uri: `${serverRoot}/image-importer`,
+            let fromParams = {
+                method: 'GET',
+                uri: `${repositoryRoot}/images/${image}/data`
+            };
+
+            let toParams = {
+                method: 'POST',
+                uri: `${serverRoot}/image-importer`,
+            }
+
+            request(fromParams, (error, response, body) => {
+
+                if(err) rej(new Error(body));
+                let code = res.statusCode;
+                if(verifyErrorCode(code))
+                    rej(new HttpError({msg: body, code: code}));
+
+            }).pipe(request(toParams), (err, res, body) => {
+
+                if(err) rej(new Error(body));
+                let code = res.statusCode;
+                if(verifyErrorCode(code))
+                    rej(new HttpError({msg: body, code: code}));
+
+            });
+
         }
 
-        request(fromParams).pipe(request(toParams));
-
-    }
+    });
 
 }

@@ -16,7 +16,7 @@ module.exports = async args => {
         let inputFile = args['file'] !== undefined ? args['file'] : jailConfig.name + '.txz';
 
         let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
-        let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
+        // let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
 
         let toParams = {
             headers : {

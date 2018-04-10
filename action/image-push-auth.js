@@ -16,26 +16,21 @@ module.exports = async (config) => {
     let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
     let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;
 
-    let fromParams = {
-        method: 'GET',
-        uri: `${serverRoot}/images/${name}/exported`
-    };
-
     let tokenPath = findCacheDir({name: 'token.json'})
-    fse.ensureFileSync(tokenPath);
 
     let json = {};
     try {
 
         json = JSON.parse(fs.readFileSync(tokenPath));
 
-    } catch(e) {
-
-        if(e.name != 'SyntaxError') throw e;
-
-    }
+    } catch(e) {}
 
     let jwt = json['authorization-token'];
+
+    let fromParams = {
+        method: 'GET',
+        uri: `${serverRoot}/images/${name}/exported`
+    };
 
     let toParams = {
         headers: {

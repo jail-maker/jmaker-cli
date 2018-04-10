@@ -45,3 +45,6 @@ if(args['daemonize']) {
     daemonize.start();
 
 }
+
+// cli should resolve where to push specified image
+// jmaker-cli push --fullname http://repo.websm.io

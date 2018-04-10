@@ -35,7 +35,7 @@ exports.handler = async args => {
 
             } else {
 
-                console.log(`${e.code}, ${e.message}`);
+                console.log(`${e.code} ${e.message}`);
 
             }
 
@@ -53,8 +53,6 @@ async function handlePushAuthorized(args) {
 
         if(i) {
 
-            console.log('accuiring jwt');
-
             try {
 
                 await authJwtWebsm(args); // accuire jwt if use of exiting jwt failed
@@ -65,7 +63,6 @@ async function handlePushAuthorized(args) {
 
                     if(e.code == 401) {
 
-                        console.log('authorization failed');
                         continue;
 
                     }
@@ -92,18 +89,17 @@ async function handlePushAuthorized(args) {
 
                 if(e.code == 401) { // if unauthorized
 
-                    console.log(e.msg);
+                    console.log(`invalid token`);
                     continue;
 
                 } else if ([400, 409].includes(e.code)) { // if bad image format or image exists
 
-                    console.log(`push authorized: ${e.code}, ${e.msg}`);
+                    console.log(`${e.code} ${e.msg}`);
                     break;
 
                 } 
 
                 // if other error
-                console.log(`push authorized: ${e.code}, ${e.msg}`);
                 throw e;
 
             }

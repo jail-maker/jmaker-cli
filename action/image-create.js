@@ -41,14 +41,7 @@ module.exports = async args => {
 
     logWebSocket.close();
 
-    let code = res.statusCode;
-    let body = res.body;
-
-    if(code < 200 || code >= 300) {
-
-        throw new StatusCodeError({msg: body, code: code});
-
-    }
-
+    if(verifyErrorCode(res.statusCode))
+        throw new HttpError({msg: res.body, code: res.statusCode});
 
 }

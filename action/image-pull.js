@@ -53,11 +53,12 @@ module.exports = async args => {
                 if(verifyErrorCode(code))
                     rej(new HttpError({msg: body, code: code}));
 
-                res();
 
             });
 
         }
+
+        res();
 
     });
 

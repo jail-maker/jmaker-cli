@@ -28,21 +28,28 @@ module.exports = async args => {
 
     let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
 
-    let res = await request({
-        method: 'POST',
-        uri: `${args['server-protocol']}://${args['server-socket']}/image-builder`,
-        json: true,
-        timeout: null,
-        formData: {
-            body: JSON.stringify(jailConfig),
-            context: context,
-        },
-        resolveWithFullResponse: true,
-    });
+    try {
 
-    logWebSocket.close();
+        let res = await request({
+            method: 'POST',
+            uri: `${args['server-protocol']}://${args['server-socket']}/image-builder`,
+            json: true,
+            timeout: null,
+            formData: {
+                body: JSON.stringify(jailConfig),
+                context: context,
+            },
+        });
 
-    if(verifyErrorCode(res.statusCode))
-        throw new HttpError({msg: res.body, code: res.statusCode});
+    } catch (e) {
+
+        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode });
+        throw e;
+
+    } finally {
+
+        logWebSocket.close();
+
+    }
 
 }

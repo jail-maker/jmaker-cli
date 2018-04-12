@@ -40,7 +40,7 @@ module.exports = async (config) => {
 
     } catch(e) {
 
-        if(e.name = 'StatusCodeError') throw new HttpError({msg: e.response.body, e.statusCode})
+        if(e.name = 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode})
         throw error;
 
     }

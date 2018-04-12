@@ -13,7 +13,7 @@ module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
 
-    let name = jailConfig.name;
+    let name = args['name'] !== undefined ? args['name'] : jailConfig.name;
 
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
     let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
@@ -24,42 +24,36 @@ module.exports = async args => {
 
     let stack = [ ...deps, name];
 
-    return new Promise((res, rej) => {
+    let first = Promise.resolve();
 
-        // pipe images from repository to server
-        for(let image of stack) {
+    for(let image of stack) {
 
-            let fromParams = {
-                method: 'GET',
-                uri: `${repositoryRoot}/images/${image}/data`
-            };
+        await new Promise((resolve, reject) => {
 
-            let toParams = {
-                method: 'POST',
-                uri: `${serverRoot}/image-importer`,
-            }
+            request.get(`${repositoryRoot}/images/${image}/data`, (err, res, body) => {
 
-            request(fromParams, (err, res, body) => {
-
-                if(err) rej(new Error(body));
+                if(err) reject(new Error(body));
                 let code = res.statusCode;
                 if(verifyErrorCode(code))
-                    rej(new HttpError({msg: body, code: code}));
+                    reject(new HttpError({msg: body, code: code}));
 
-            }).pipe(request(toParams), (err, res, body) => {
+            }).pipe(
 
-                if(err) rej(new Error(body));
-                let code = res.statusCode;
-                if(verifyErrorCode(code))
-                    rej(new HttpError({msg: body, code: code}));
+                request.post(`${serverRoot}/image-importer`, (err, res, body) => {
 
+                    if(err) reject(new Error(body));
+                    let code = res.statusCode;
+                    if(verifyErrorCode(code))
+                        reject(new HttpError({msg: body, code: code}));
 
-            });
+                    resolve();
 
-        }
+                })
 
-        res();
+            );
 
-    });
+        });
+
+    }
 
 }

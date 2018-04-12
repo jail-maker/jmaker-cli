@@ -4,9 +4,9 @@ const imagePushNoAuth = require('../action/image-push-no-auth.js');
 const imagePushAuth = require('../action/image-push-auth.js');
 const authJwtWebsm = require('../action/auth-jwt-websm.js');
 
-exports.command = 'push <name>';
+exports.command = 'push [name]';
 
-exports.describe = 'push image from server to repository';
+exports.describe = 'push image to repository';
 
 exports.builder = yargs => {
 

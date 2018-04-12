@@ -4,7 +4,7 @@ const imageCreate = require('../action/image-create.js');
 
 exports.command = 'create';
 
-exports.describe = 'import and build image on server';
+exports.describe = 'import and build image';
 
 exports.builder = yargs => {
 
@@ -27,4 +27,5 @@ exports.handler = async args => {
         } else throw e;
 
     }
+
 }

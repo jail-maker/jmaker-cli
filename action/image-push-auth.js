@@ -11,7 +11,7 @@ const verifyErrorCode = require('../lib/verify-error-code.js');
 module.exports = async (config) => {
 
     let jailConfig = new JailConfig(config);
-    let name = config['name'];
+    let name = config['name'] !== undefined ? config['name'] : jailConfig.name;
 
     let serverRoot = `${config['server-protocol']}://${config['server-socket']}`;
     let repositoryRoot = `${config['repository-protocol']}://${config['repository-socket']}`;

@@ -14,6 +14,17 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await imageCreate(args);
+    try {
 
+        await imageCreate(args);
+
+    } catch (e) {
+
+        if(e.name == 'HttpError') {
+
+            console.log(`${e.code}, ${e.message}`);
+
+        } else throw e;
+
+    }
 }

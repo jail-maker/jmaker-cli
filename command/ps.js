@@ -1,6 +1,7 @@
 'use strict';
 
-const printList = require('../action/print-list.js');
+const imageList = require('../action/image-list.js');
+const jailList = require('../action/jail-list.js');
 
 exports.command = 'ps';
 
@@ -20,7 +21,15 @@ exports.handler = async args => {
 
     try {
 
-        await printList(args);
+        if(args['all']) {
+
+            console.log(await imageList(args));
+
+        } else {
+
+            console.log(await jailList(args));
+
+        }
 
     } catch (e) {
 

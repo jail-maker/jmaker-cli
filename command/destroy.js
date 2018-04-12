@@ -1,41 +1,35 @@
 'use strict';
 
-const request = require('request');
-const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const chalk = require('chalk');
+
+const imageDestroy = require('../action/image-destroy.js');
 
 exports.command = 'destroy';
 
-exports.describe = 'destroy jail';
+exports.describe = 'destroy image';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('name', {
+            describe: 'name of image',
+        });
 
 }
 
 exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
+    try {
 
-    request({
-        method: 'DELETE',
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/destroy`,
-    }, (error, response, body) => {
+        await imageDestroy(args);
 
-        let code = response.statusCode;
+    } catch (e) {
 
-        if (code !== 200) {
+        if(e.name == 'HttpError') {
 
-            console.log(chalk.red(`${code} ${body}`));
+            console.log(`${e.code}, ${e.message}`);
 
-        }
+        } else throw e;
 
-        logWebSocket.close();
-
-    });
-
+    }
 
 }

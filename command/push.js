@@ -1,54 +1,166 @@
 'use strict';
 
-const request = require('request');
-const chalk = require('chalk');
-const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const fs = require('fs');
-const path = require('path');
+const imagePushNoAuth = require('../action/image-push-no-auth.js');
+const imagePushAuth = require('../action/image-push-auth.js');
+const authJwtWebsm = require('../action/auth-jwt-websm.js');
 
-exports.command = 'push';
+exports.command = 'push <name>';
 
-exports.describe = 'push to repository';
+exports.describe = 'push image from server to repository';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('repository', {
-            alias: 'rep',
-        }).option('name', {
-            demandOption: true,
+        .positional('name', {
+            describe: 'name of image to push'
+        })
+        .option('auth', {
+            alias: 'a',
+            type: 'boolean',
+            describe: 'force authorization',
+        })
+        .option('auth-update', {
+            alias: 'u',
+            type: 'boolean',
+            describe: 'force update authorization token',
         });
 
 }
 
 exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args);
+    if(args['auth-update']) {
 
-    let tokenContent = fs.readFileSync(args['token-file']);
-    let tokenJson = JSON.parse(tokenContent);
+        while(true) {
 
-    request({
-        method: 'POST',
-        uri: `${args['server-protocol']}://${args['server-socket']}/images/push-to-repo`,
-        json: true,
-        timeout: null,
-        body: {
-            image: args['name'],
-            repository: args['repository'] !== undefined ? args['repository'] : args['repository-socket'],
-            tokenJson: tokenJson,
-        },
-    }, (error, response, body) => {
+            try {
 
-        let code = response.statusCode;
+                await authJwtWebsm(args);
+                break;
 
-        if (code !== 200) {
+            } catch(e) {
 
-            console.log(chalk.red(`${code} ${body}`));
+                if(e.name == 'HttpError') {
+
+                    if(e.code == 401) {
+
+                        continue;
+
+                    }
+
+                }
+
+                throw e;
+
+            }
 
         }
 
-    });
+    }
+
+    if(args['auth']) {
+
+        await handlePushAuthorized(args);
+
+    } else {
+
+        await handleDefault(args);
+
+    }
+
+}
+
+async function handleDefault(args) {
+
+    try {
+
+        // try push if no authorization required
+        console.log('push without authorization');
+        await imagePushNoAuth(args);
+
+    } catch(e) {
+
+        if(e.name == 'HttpError') {
+
+            if(e.code == 401) { // if authorization required
+
+                await handlePushAuthorized(args);
+
+            } else {
+
+                console.log(`${e.code} ${e.message}`);
+
+            }
+
+        } else throw e;
+
+    }
+
+}
+
+async function handlePushAuthorized(args) {
+
+    let i = 0;
+
+    do {
+
+        if(i) {
+
+            try {
+
+                await authJwtWebsm(args); // accuire jwt if use of exiting jwt failed
+
+            } catch(e) {
+
+                if(e.name == 'HttpError') {
+
+                    if(e.code == 401) {
+
+                        continue;
+
+                    }
+
+                }
+
+                throw e;
+
+            }
+
+        } else console.log('use existing jwt');
+
+        ++i;
+
+        try {
+
+            console.log('push authorized');
+            await imagePushAuth(args); // push using accuired jwt
+            break;
+
+        } catch(e) {
+
+            if(e.name = 'HttpError') {
+
+                if(e.code == 401) { // if unauthorized
+
+                    console.log(`invalid token`);
+                    continue;
+
+                } else if ([400, 409].includes(e.code)) { // if bad image format or image exists
+
+                    console.log(`${e.code} ${e.message}`);
+                    break;
+
+                } 
+
+                // if other error
+                throw e;
+
+            }
+
+            throw e;
+
+        }
+
+    } while(true);
 
 }

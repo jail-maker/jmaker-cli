@@ -1,8 +1,6 @@
 'use strict';
 
-const request = require('request');
-const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
+const jailStop = require('../action/jail-stop.js');
 
 exports.command = 'stop';
 
@@ -14,26 +12,20 @@ exports.builder = yargs => {
 
 }
 
-exports.handler = args => {
+exports.handler = async args => {
 
-    let jailConfig = new JailConfig(args);
-    let logWebSocket = new LogWebSocket(`${args['log-protocol']}://${args['log-socket']}`, jailConfig);
+    try {
 
-    request({
-        method: 'DELETE',
-        uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/stop`,
-    }, (error, response, body) => {
+        await jailStop(args);
 
-        let code = response.statusCode;
+    } catch (e) {
 
-        if (code !== 200) {
+        if(e.name == 'HttpError') {
 
-            console.log(chalk.red(`${code} ${body}`));
+            console.log(`${e.code}, ${e.message}`);
 
-        }
+        } else throw e;
 
-        logWebSocket.close();
-
-    });
+    }
 
 }

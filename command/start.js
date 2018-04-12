@@ -14,6 +14,17 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await jailStart(args);
+    try {
 
+        await jailStart(args);
+
+    } catch (e) {
+
+        if(e.name == 'HttpError') {
+
+            console.log(`${e.code}, ${e.message}`);
+
+        } else throw e;
+
+    }
 }

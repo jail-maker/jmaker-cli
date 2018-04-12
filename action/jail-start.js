@@ -5,6 +5,7 @@ const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
 const chalk = require('chalk');
 const verifyErrorCode = require('../lib/verify-error-code.js');
+const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
 
@@ -23,13 +24,14 @@ module.exports = async args => {
             body: jailConfig,
         });
 
-        let code = res.statusCode;
-        if(verifyErrorCode(code))
-            reject(new HttpError({msg: body, code: code}));
-
     } catch(e) {
 
-        throw e;
+        if(e.name == 'StatusCodeError') {
+
+            if(verifyErrorCode(e.statusCode))
+                throw new HttpError({msg: e.response.body, code: e.statusCode });
+
+        } else throw e;
 
     } finally {
 

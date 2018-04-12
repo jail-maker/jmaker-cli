@@ -7,6 +7,7 @@ const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
 const compress = require('../lib/compress.js');
 const ignored = require('../lib/ignored-files.js');
+const verifyErrorCode = require('../lib/verify-error-code.js');
 
 /**
  * throws StatusCodeError

@@ -2,21 +2,33 @@
 
 const imageImport = require('../action/image-import.js');
 
-exports.command = 'import';
+exports.command = 'import <file>';
 
 exports.describe = 'import image from repository to server';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('file', {
-            describe: 'name of image file to import',
+        .positional('file', {
+            describe: 'name of image file',
         });
 
 }
 
 exports.handler = async args => {
 
-    await imageImport(args);
+    try {
+
+        await imageImport(args);
+
+    } catch(e) {
+
+        if(e.name == 'HttpError') {
+
+            console.log(`${e.code}, ${e.message}`);
+
+        } else throw e;
+
+    }
 
 }

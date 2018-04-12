@@ -4,20 +4,73 @@ const imagePushNoAuth = require('../action/image-push-no-auth.js');
 const imagePushAuth = require('../action/image-push-auth.js');
 const authJwtWebsm = require('../action/auth-jwt-websm.js');
 
-exports.command = 'push';
+exports.command = 'push <name>';
 
 exports.describe = 'push image from server to repository';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('name', {
+        .positional('name', {
             describe: 'name of image to push'
+        })
+        .option('auth', {
+            alias: 'a',
+            type: 'boolean',
+            describe: 'force authorization',
+        })
+        .option('auth-update', {
+            alias: 'u',
+            type: 'boolean',
+            describe: 'force update authorization token',
         });
 
 }
 
 exports.handler = async args => {
+
+    if(args['auth-update']) {
+
+        while(true) {
+
+            try {
+
+                await authJwtWebsm(args);
+                break;
+
+            } catch(e) {
+
+                if(e.name == 'HttpError') {
+
+                    if(e.code == 401) {
+
+                        continue;
+
+                    }
+
+                }
+
+                throw e;
+
+            }
+
+        }
+
+    }
+
+    if(args['auth']) {
+
+        await handlePushAuthorized(args);
+
+    } else {
+
+        await handleDefault(args);
+
+    }
+
+}
+
+async function handleDefault(args) {
 
     try {
 
@@ -94,7 +147,7 @@ async function handlePushAuthorized(args) {
 
                 } else if ([400, 409].includes(e.code)) { // if bad image format or image exists
 
-                    console.log(`${e.code} ${e.msg}`);
+                    console.log(`${e.code} ${e.message}`);
                     break;
 
                 } 

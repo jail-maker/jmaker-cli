@@ -46,5 +46,15 @@ if(args['daemonize']) {
 
 }
 
-// cli should resolve where to push specified image
-// jmaker-cli push --fullname http://repo.websm.io
+/*
+
+tar -a -cf ../freebsd-11.1_1.txz .
+jmaker-cli import freebsd-11.1
+jmaker-cli push freebsd-11.1
+jmaker-cli create
+jmaker-cli start
+jmaker-cli stop
+jmaker-cli export freebsd-11.1 /home/md/freebsd-11.1.txz
+jmaker-cli destroy
+
+*/

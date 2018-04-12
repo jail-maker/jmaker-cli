@@ -9,12 +9,27 @@ exports.describe = 'destroy image';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('name', {
+            describe: 'name of image',
+        });
 
 }
 
 exports.handler = async args => {
 
-    await imageDestroy(args);
+    try {
+
+        await imageDestroy(args);
+
+    } catch (e) {
+
+        if(e.name == 'HttpError') {
+
+            console.log(`${e.code}, ${e.message}`);
+
+        } else throw e;
+
+    }
 
 }

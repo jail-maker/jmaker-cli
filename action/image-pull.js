@@ -1,13 +1,11 @@
 'use strict';
 
 const request = require('request');
-const chalk = require('chalk');
+const requestpn = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const fs = require('fs');
-const path = require('path');
 const DependencyResolver = require('../lib/dependency-resolver.js');
 const verifyErrorCode = require('../lib/verify-error-code.js');
+const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
 
@@ -22,13 +20,21 @@ module.exports = async args => {
     let depRes = new DependencyResolver(serverRoot, repositoryRoot);
     let deps = await depRes.resolve(name);
 
-    let stack = [ ...deps, name];
+    let awail = await requestpn({
+        method: 'GET',
+        uri: `${serverRoot}/images`,
+        json: true,
+    })
+        .then(res => res.items)
+        .then(res => res.map(image => image.name));
 
-    let first = Promise.resolve();
+    let stack = awail.includes(name) ? [...deps] : [ ...deps, name];
 
     for(let image of stack) {
 
         await new Promise((resolve, reject) => {
+
+            process.stdout.write(`fetching ${image}`);
 
             request.get(`${repositoryRoot}/images/${image}/data`, (err, res, body) => {
 

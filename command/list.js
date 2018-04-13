@@ -3,16 +3,16 @@
 const imageList = require('../action/image-list.js');
 const jailList = require('../action/jail-list.js');
 
-exports.command = 'ps';
+exports.command = 'list';
 
 exports.describe = 'print list of containers';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('all', {
-            alias: 'a',
-            describe: 'all images',
+        .option('images', {
+            alias: 'i',
+            describe: 'show images',
         });
 
 }
@@ -21,7 +21,7 @@ exports.handler = async args => {
 
     try {
 
-        if(args['all']) {
+        if(args['i']) {
 
             console.log(await imageList(args));
 

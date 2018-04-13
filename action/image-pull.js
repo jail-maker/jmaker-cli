@@ -34,7 +34,7 @@ module.exports = async args => {
 
         await new Promise((resolve, reject) => {
 
-            process.stdout.write(`fetching ${image}`);
+            process.stdout.write(`fetching ${image}\n`);
 
             request.get(`${repositoryRoot}/images/${image}/data`, (err, res, body) => {
 

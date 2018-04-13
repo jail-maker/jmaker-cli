@@ -23,7 +23,7 @@ let args = yargs
     .strict(true)
     .recommendCommands()
     .wrap(null)
-    .config('config', function(configFile) {
+    .config('config', 'path to yaml file', function(configFile) {
 
         let content = fs.readFileSync(configFile, 'utf-8');
         let obj = yaml.safeLoad(content);

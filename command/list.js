@@ -21,15 +21,19 @@ exports.handler = async args => {
 
     try {
 
+        let res = [];
         if(args['i']) {
 
-            console.log(await imageList(args));
+            res = await imageList(args);
 
         } else {
 
-            console.log(await jailList(args));
+            res = await jailList(args);
 
         }
+
+        for(let item of res)
+            process.stdout.write(item + '\n');
 
     } catch (e) {
 

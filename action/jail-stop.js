@@ -3,7 +3,6 @@
 const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
-const chalk = require('chalk');
 const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
@@ -16,7 +15,7 @@ module.exports = async args => {
 
         let res = await request({
             method: 'DELETE',
-            uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}/stop`,
+            uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}`,
         });
 
     } catch(e) {
@@ -26,7 +25,7 @@ module.exports = async args => {
 
     } finally {
 
-        logWebSocket.close();
+        // logWebSocket.close();
 
     }
 

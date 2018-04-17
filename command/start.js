@@ -1,7 +1,7 @@
 'use strict';
 
 const jailStart = require('../action/jail-start.js');
-const addHost = require('../action/host-add.js');
+const hostAdd = require('../action/host-add.js');
 
 exports.command = 'start';
 
@@ -18,7 +18,7 @@ exports.handler = async args => {
     try {
 
         await jailStart(args);
-        await addHost(args);
+        await hostAdd(args);
 
     } catch (e) {
 

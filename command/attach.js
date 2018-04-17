@@ -1,10 +1,10 @@
 'use strict';
 
-const attachStream = require('../action/attach-stream.js');
+const attachStream = require('../action/attach-input.js');
 
 exports.command = 'attach [name]';
 
-exports.describe = 'attach input stream to current terminal';
+exports.describe = 'attach i/o streams to current terminal';
 
 exports.builder = yargs => {
 
@@ -12,9 +12,11 @@ exports.builder = yargs => {
         .positional('name', {
             describe: 'name of container',
         })
-        .option('detach-keys', {
-            default: 'ctrl+c',
-            describe: 'sequence of keys to detach',
+        .option('i', {
+            describe: 'input stream',
+        })
+        .option('o', {
+            describe: 'output stream',
         });
 
 }
@@ -23,7 +25,8 @@ exports.handler = async args => {
 
     try {
 
-        await attachStream(args);
+        if(args['i']) 
+            await attachInput(args);
 
     } catch (e) {
 

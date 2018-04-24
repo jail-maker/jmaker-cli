@@ -19,10 +19,10 @@ module.exports = async args => {
 
     let toParams = {
         headers : {
-            'content-type': 'application/x-xz',
+            'content-type': 'application/x-tar',
         },
         method: 'POST',
-        uri: `${serverRoot}/image-importer`,
+        uri: `${serverRoot}/containers/importer`,
     };
 
     let input = path.resolve(inputFile);

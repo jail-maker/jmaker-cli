@@ -17,7 +17,7 @@ module.exports = async args => {
 
     let fromParams = {
         method: 'GET',
-        uri: `${serverRoot}/images/${image}/exported`,
+        uri: `${serverRoot}/containers/list/${image}/exported`,
     };
 
     let output = path.resolve(args['file']);

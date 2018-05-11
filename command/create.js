@@ -4,7 +4,7 @@ const imageCreate = require('../action/image-create.js');
 
 exports.command = 'create';
 
-exports.describe = 'import and build image on server';
+exports.describe = 'import and build image';
 
 exports.builder = yargs => {
 
@@ -14,6 +14,18 @@ exports.builder = yargs => {
 
 exports.handler = async args => {
 
-    await imageCreate(args);
+    try {
+
+        await imageCreate(args);
+
+    } catch (e) {
+
+        if(e.name == 'HttpError') {
+
+            console.log(`${e.code}, ${e.message}`);
+
+        } else throw e;
+
+    }
 
 }

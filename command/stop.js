@@ -1,6 +1,7 @@
 'use strict';
 
 const jailStop = require('../action/jail-stop.js');
+const hostRemove = require('../action/host-remove.js');
 
 exports.command = 'stop';
 
@@ -16,6 +17,7 @@ exports.handler = async args => {
 
     try {
 
+        await hostRemove(args);
         await jailStop(args);
 
     } catch (e) {

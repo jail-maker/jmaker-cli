@@ -3,5 +3,6 @@
 ## example:
 ```
 cd example
-../index.js create
+../index.js --help
+../index.js create --help
 ```

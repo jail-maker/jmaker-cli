@@ -3,14 +3,14 @@
 
 const imageDestroy = require('../action/image-destroy.js');
 
-exports.command = 'destroy';
+exports.command = 'destroy [name]';
 
 exports.describe = 'destroy image';
 
 exports.builder = yargs => {
 
     return yargs
-        .option('name', {
+        .positional('name', {
             describe: 'name of image',
         });
 

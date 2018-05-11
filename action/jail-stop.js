@@ -25,7 +25,7 @@ module.exports = async args => {
 
     } finally {
 
-        // logWebSocket.close();
+        logWebSocket.close();
 
     }
 

@@ -3,6 +3,7 @@
 const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
 const Hosts = require('../lib/hosts.js');
+const HttpError = require('../error/http-error.js');
 
 /**
  * throws StatusCodeError

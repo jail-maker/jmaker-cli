@@ -1,11 +1,14 @@
 'use strict';
 
-const request = require('request-promise-native');
+const prequest = require('request-promise-native');
+const request = require('request');
 const fs = require('fs');
 const chalk = require('chalk');
+const HttpError = require('../error/http-error');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
 const compress = require('../lib/compress.js');
+const compressStream = require('../lib/compress-stream.js');
 const ignored = require('../lib/ignored-files.js');
 const verifyErrorCode = require('../lib/verify-error-code.js');
 
@@ -20,36 +23,41 @@ module.exports = async args => {
     let logRoot = `${args['log-protocol']}://${args['log-socket']}`;
 
     let exclude = ignored.get();
-    let archive = `/tmp/${jailConfig.name}-context.tar`;
     let cd = process.cwd();
 
-    await compress('./', archive, {exclude, cd});
-    let context = fs.createReadStream(archive);
-
     let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
+    fs.writeFileSync('.manifest', JSON.stringify(jailConfig));
 
-    try {
+    await (new Promise((resolve, reject) => {
 
-        let res = await request({
-            method: 'POST',
-            uri: `${args['server-protocol']}://${args['server-socket']}/image-builder`,
-            json: true,
-            timeout: null,
-            formData: {
-                body: JSON.stringify(jailConfig),
-                context: context,
+        let stream = request.post({
+            headers : {
+                'content-type': 'application/x-tar',
             },
+            uri: `${args['server-protocol']}://${args['server-socket']}/containers/builder`,
+        }, (error, res, body) => {
+
+            logWebSocket.close();
+
+            if (error) {
+
+                reject(error);
+
+            } else if (res.statusCode !== 200) {
+
+                let httpError = new HttpError({
+                    msg: body, code: res.statusCode
+                });
+                reject(httpError);
+
+            } else resolve();
+
         });
 
-    } catch (e) {
+        let context = compressStream('./', {exclude, cd});
 
-        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode });
-        throw e;
+        context.pipe(stream);
 
-    } finally {
-
-        logWebSocket.close();
-
-    }
+    }));
 
 }

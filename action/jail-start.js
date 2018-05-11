@@ -16,10 +16,13 @@ module.exports = async args => {
 
         let res = await request({
             method: 'POST',
-            uri: `${args['server-protocol']}://${args['server-socket']}/jails`,
+            uri: `${args['server-protocol']}://${args['server-socket']}/containers/started`,
             json: true,
             timeout: null,
-            body: jailConfig,
+            body: {
+                name: jailConfig.name,
+                launchOptions: {},
+            },
         });
 
     } catch(e) {
@@ -29,7 +32,7 @@ module.exports = async args => {
 
     } finally {
 
-        // logWebSocket.close();
+        logWebSocket.close();
 
     }
 

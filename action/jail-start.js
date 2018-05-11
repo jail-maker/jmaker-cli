@@ -3,8 +3,6 @@
 const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
 const LogWebSocket = require('../lib/log-web-socket.js');
-const chalk = require('chalk');
-const verifyErrorCode = require('../lib/verify-error-code.js');
 const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
@@ -18,7 +16,7 @@ module.exports = async args => {
 
         let res = await request({
             method: 'POST',
-            uri: `${args['server-protocol']}://${args['server-socket']}/jails/start`,
+            uri: `${args['server-protocol']}://${args['server-socket']}/jails`,
             json: true,
             timeout: null,
             body: jailConfig,
@@ -26,16 +24,12 @@ module.exports = async args => {
 
     } catch(e) {
 
-        if(e.name == 'StatusCodeError') {
-
-            if(verifyErrorCode(e.statusCode))
-                throw new HttpError({msg: e.response.body, code: e.statusCode });
-
-        } else throw e;
+        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode });
+        throw e;
 
     } finally {
 
-        logWebSocket.close();
+        // logWebSocket.close();
 
     }
 

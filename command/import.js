@@ -4,7 +4,7 @@ const imageImport = require('../action/image-import.js');
 
 exports.command = 'import <file>';
 
-exports.describe = 'import image from repository to server';
+exports.describe = 'import image from repository';
 
 exports.builder = yargs => {
 

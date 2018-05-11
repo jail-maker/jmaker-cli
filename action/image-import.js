@@ -33,6 +33,8 @@ module.exports = async args => {
         stream.pipe(
             request(toParams, (error, response, body) => {
 
+                if(error) throw new Error(error);
+
                 let code = response.statusCode;
 
                 if (verifyErrorCode(code))

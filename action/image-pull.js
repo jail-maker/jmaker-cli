@@ -1,19 +1,17 @@
 'use strict';
 
 const request = require('request');
-const chalk = require('chalk');
+const requestpn = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
-const LogWebSocket = require('../lib/log-web-socket.js');
-const fs = require('fs');
-const path = require('path');
 const DependencyResolver = require('../lib/dependency-resolver.js');
 const verifyErrorCode = require('../lib/verify-error-code.js');
+const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
 
-    let name = jailConfig.name;
+    let name = args['name'] !== undefined ? args['name'] : jailConfig.name;
 
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
     let repositoryRoot = `${args['repository-protocol']}://${args['repository-socket']}`;
@@ -22,43 +20,46 @@ module.exports = async args => {
     let depRes = new DependencyResolver(serverRoot, repositoryRoot);
     let deps = await depRes.resolve(name);
 
-    let stack = [ ...deps, name];
+    let awail = await requestpn({
+        method: 'GET',
+        uri: `${serverRoot}/images`,
+        json: true,
+    })
+        .then(res => res.items)
+        .then(res => res.map(image => image.name));
 
-    return new Promise((res, rej) => {
+    let stack = awail.includes(name) ? [...deps] : [ ...deps, name];
 
-        // pipe images from repository to server
-        for(let image of stack) {
+    for(let image of stack) {
 
-            let fromParams = {
-                method: 'GET',
-                uri: `${repositoryRoot}/images/${image}/data`
-            };
+        await new Promise((resolve, reject) => {
 
-            let toParams = {
-                method: 'POST',
-                uri: `${serverRoot}/image-importer`,
-            }
+            process.stdout.write(`fetching ${image}\n`);
 
-            request(fromParams, (err, res, body) => {
+            request.get(`${repositoryRoot}/images/${image}/data`, (err, res, body) => {
 
-                if(err) rej(new Error(body));
+                if(err) reject(new Error(body));
                 let code = res.statusCode;
                 if(verifyErrorCode(code))
-                    rej(new HttpError({msg: body, code: code}));
+                    reject(new HttpError({msg: body, code: code}));
 
-            }).pipe(request(toParams), (err, res, body) => {
+            }).pipe(
 
-                if(err) rej(new Error(body));
-                let code = res.statusCode;
-                if(verifyErrorCode(code))
-                    rej(new HttpError({msg: body, code: code}));
+                request.post(`${serverRoot}/image-importer`, (err, res, body) => {
 
-                res();
+                    if(err) reject(new Error(body));
+                    let code = res.statusCode;
+                    if(verifyErrorCode(code))
+                        reject(new HttpError({msg: body, code: code}));
 
-            });
+                    resolve();
 
-        }
+                })
 
-    });
+            );
+
+        });
+
+    }
 
 }

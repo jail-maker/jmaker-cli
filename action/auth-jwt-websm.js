@@ -7,10 +7,7 @@ const fsextra = require('fs-extra');
 const JailConfig = require('../lib/jail-config.js');
 
 const findCacheDir = require('find-cache-dir');
-
-/**
- * throws HttpError(code = 401)
- */
+const HttpError = require('../error/http-error.js');
 
 module.exports = async (config) => {
 
@@ -33,8 +30,8 @@ module.exports = async (config) => {
             },
             json: true,
             body: {
-                repository: config['repository-socket'],
-            }
+                access: 'all',
+            },
         });
 
         let tokenPath = findCacheDir({name: 'token.json'})
@@ -43,13 +40,8 @@ module.exports = async (config) => {
 
     } catch(e) {
 
-        if(e.name = 'HttpError' && e.statusCode == 401) {
-
-            throw new HttpError({msg: 'authorization required', code: 401})
-
-        }
-
-        throw error;
+        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode})
+        throw e;
 
     }
 

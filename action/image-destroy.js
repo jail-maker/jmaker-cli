@@ -11,19 +11,24 @@ const HttpError = require('../error/http-error.js');
 
 module.exports = async args => {
 
-    let jailConfig = new JailConfig(args);
-    let name = args['name'] !== undefined ? args['name'] : jailConfig.name;
+    let name = args.name;
 
     try {
 
-        let res = await request({
-            method: 'DELETE',
-            uri: `${args['server-protocol']}://${args['server-socket']}/images/${name}`,
+        let res = await request.delete({
+            uri: `${args['server-protocol']}://${args['server-socket']}/containers/${name}`,
         });
 
-    } catch(e) {
+    } catch(error) {
 
-        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode });
+        if (error.name == 'StatusCodeError') {
+
+            throw new HttpError({
+                msg: error.response.body,
+                code: error.statusCode
+            });
+
+        }
         throw e;
 
     }

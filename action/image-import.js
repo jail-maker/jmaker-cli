@@ -5,16 +5,13 @@ const chalk = require('chalk');
 const JailConfig = require('../lib/jail-config.js');
 const fs = require('fs');
 const path = require('path');
-const DependencyResolver = require('../lib/dependency-resolver.js');
 const HttpError = require('../error/http-error.js');
 const verifyErrorCode = require('../lib/verify-error-code.js');
 
 module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
-
-    let inputFile = args['file'] !== undefined ? args['file'] : jailConfig.name + '.txz';
-
+    let inputFile = args.file;
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 
     let toParams = {
@@ -42,7 +39,8 @@ module.exports = async args => {
 
                 res();
 
-            }));
+            })
+        );
 
     });
 

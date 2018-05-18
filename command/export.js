@@ -2,7 +2,7 @@
 
 const imageExport = require('../action/image-export.js');
 
-exports.command = 'export <file>';
+exports.command = 'export [--name name|id] <file>';
 
 exports.describe = 'export image to file';
 
@@ -12,8 +12,10 @@ exports.builder = yargs => {
         .positional('file', {
             describe: 'name of output file',
         })
-        .option('name', {
-            describe: 'name of image to export',
+        .option('n', {
+            alias: 'name',
+            type: 'string',
+            describe: 'name or id of image to export',
         });
 
 }

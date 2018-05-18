@@ -3,15 +3,17 @@
 
 const imageDestroy = require('../action/image-destroy.js');
 
-exports.command = 'destroy [name]';
+exports.command = 'destroy [-n|--name (name|id)]';
 
-exports.describe = 'destroy image';
+exports.describe = 'destroy conatiner';
 
 exports.builder = yargs => {
 
     return yargs
-        .positional('name', {
-            describe: 'name of image',
+        .option('n', {
+            alias: 'name',
+            type: 'string',
+            describe: 'name or id of the conatiner.',
         });
 
 }

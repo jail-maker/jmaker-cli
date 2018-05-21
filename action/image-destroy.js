@@ -16,7 +16,7 @@ module.exports = async args => {
     try {
 
         let res = await request.delete({
-            uri: `${args['server-protocol']}://${args['server-socket']}/containers/${name}`,
+            uri: `${args['server-protocol']}://${args['server-socket']}/containers/list/${name}`,
         });
 
     } catch(error) {

@@ -21,8 +21,7 @@ module.exports = async args => {
     };
 
     let output = path.resolve(args['file']);
-
-    let stream = fs.createWriteStream(output);
+    let stream = !output ? process.output : fs.createWriteStream(output);
 
     return new Promise((res, rej) => {
 

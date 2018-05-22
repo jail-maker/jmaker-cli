@@ -25,23 +25,23 @@ module.exports = async args => {
     let input = path.resolve(inputFile);
     let stream = fs.createReadStream(input);
 
-    return new Promise((res, rej) => {
+    await (new Promise((res, rej) => {
 
         stream.pipe(
             request(toParams, (error, response, body) => {
 
-                if(error) throw new Error(error);
+                if (error) throw new Error(error);
 
                 let code = response.statusCode;
 
                 if (verifyErrorCode(code))
-                    rej(new HttpError({msg: body, code: code}));
+                    rej(new HttpError({ msg: body, code: code }));
 
                 res();
 
             })
         );
 
-    });
+    }));
 
 }

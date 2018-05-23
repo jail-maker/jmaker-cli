@@ -10,7 +10,8 @@ exports.builder = yargs => {
 
     return yargs
         .positional('file', {
-            describe: 'name of image file',
+            type: 'string',
+            describe: 'path to file or "-" for read from stdin',
         });
 
 }

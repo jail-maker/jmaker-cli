@@ -12,6 +12,16 @@ module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
     let inputFile = args.file;
+
+    let stream = null;
+
+    if (inputFile.length) {
+
+        let file = path.resolve(inputFile);
+        stream = fs.createReadStream(file);
+
+    } else stream = process.stdin;
+
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 
     let toParams = {
@@ -22,10 +32,7 @@ module.exports = async args => {
         uri: `${serverRoot}/containers/importer`,
     };
 
-    let input = path.resolve(inputFile);
-    let stream = fs.createReadStream(input);
-
-    await (new Promise((res, rej) => {
+    return new Promise((res, rej) => {
 
         stream.pipe(
             request(toParams, (error, response, body) => {
@@ -42,6 +49,6 @@ module.exports = async args => {
             })
         );
 
-    }));
+    });
 
 }

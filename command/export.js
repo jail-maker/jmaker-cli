@@ -9,9 +9,8 @@ exports.describe = 'export container.';
 exports.builder = yargs => {
 
     return yargs
-        .option('f', {
-            alias: 'file',
-            default: '',
+        .option('o', {
+            alias: 'output',
             type: 'string',
             describe: 'path to file for saving, or - for output to stdout.',
         })

@@ -10,18 +10,23 @@ const verifyErrorCode = require('../lib/verify-error-code.js');
 module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
+    let container = args.name ? args.name : jailConfig.name;
+    let output = args.output;
+    let stream = null;
 
-    let image = args['name'] !== undefined ? args['name'] : jailConfig.name;
+    if (output) {
+
+        let file = path.resolve(output);
+        stream = fs.createWriteStream(file);
+
+    } else stream = process.stdout;
 
     let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 
     let fromParams = {
         method: 'GET',
-        uri: `${serverRoot}/containers/list/${image}/exported`,
+        uri: `${serverRoot}/containers/list/${container}/exported`,
     };
-
-    let output = path.resolve(args['file']);
-    let stream = !output ? process.output : fs.createWriteStream(output);
 
     return new Promise((res, rej) => {
 
@@ -35,7 +40,7 @@ module.exports = async args => {
 
         }).pipe(stream);
 
-        stream.on('finish', () => {res();});
+        stream.on('finish', () => res());
 
     });
 

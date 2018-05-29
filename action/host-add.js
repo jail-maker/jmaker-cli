@@ -2,7 +2,7 @@
 
 const request = require('request-promise-native');
 const JailConfig = require('../lib/jail-config.js');
-const Hosts = require('../lib/hosts.js');
+const hosts = require('../lib/hosts.js');
 const HttpError = require('../error/http-error.js');
 
 /**
@@ -15,25 +15,24 @@ module.exports = async args => {
 
     try {
 
-        let jailInfo  = (await request({
-            method: 'GET',
-            uri: `${args['server-protocol']}://${args['server-socket']}/jails/${jailConfig.name}`,
-            json: true,
+        let response = await request.get({
+            uri: `${args['server-protocol']}://${args['server-socket']}/containers/list/${jailConfig.name}/runtime`,
             timeout: null,
-            body: jailConfig,
-        })).info;
+        });
 
+        response = JSON.parse(response);
+        let jailInfo = response.info;
         let hostName = jailInfo['host.hostname'];
-
         let ipsv4 = [];
-        if(jailInfo['ip4.addr']) {
+        let ipsv6 = [];
+
+        if (jailInfo['ip4.addr']) {
 
             ipsv4 = jailInfo['ip4.addr'].split(',');
 
         }
 
-        let ipsv6 = [];
-        if(jailInfo['ip6.addr']) {
+        if (jailInfo['ip6.addr']) {
 
             ipsv6 = jailInfo['ip6.addr'].split(',');
 
@@ -41,15 +40,22 @@ module.exports = async args => {
 
         let ips = [].concat(ipsv4, ipsv6);
 
-        for(let ip of ips)
-            Hosts.addHost(ip, hostName);
+        for (let ip of ips) hosts.addHost(ip, hostName);
 
-        Hosts.commit();
+        hosts.commit();
 
-    } catch (e) {
+    } catch (error) {
 
-        if(e.name == 'StatusCodeError') throw new HttpError({msg: e.response.body, code: e.statusCode });
-        throw e;
+        if (error.name == 'StatusCodeError') {
+
+            throw new HttpError({
+                msg: error.response.body,
+                code: error.statusCode 
+            });
+
+        }
+
+        throw error;
 
     }
 

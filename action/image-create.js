@@ -25,7 +25,7 @@ module.exports = async args => {
     let exclude = ignored.get();
     let cd = process.cwd();
 
-    let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
+    // let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
     fs.writeFileSync('.manifest', JSON.stringify(jailConfig));
 
     await (new Promise((resolve, reject) => {
@@ -37,7 +37,7 @@ module.exports = async args => {
             uri: `${args['server-protocol']}://${args['server-socket']}/containers/builder`,
         }, (error, res, body) => {
 
-            logWebSocket.close();
+            // logWebSocket.close();
 
             if (error) {
 

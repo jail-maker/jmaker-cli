@@ -25,7 +25,7 @@ exports.handler = async args => {
     try {
 
         await jailStop(args);
-        await hostRemove(args);
+        // await hostRemove(args);
 
     } catch (e) {
 

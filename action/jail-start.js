@@ -11,7 +11,7 @@ module.exports = async args => {
     let jailConfig = new JailConfig(args);
 
     let logRoot = `${args['log-protocol']}://${args['log-socket']}`;
-    let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
+    // let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
 
     let name = args.name ? args.name : jailConfig.name;
     let rules = args.rules
@@ -48,7 +48,7 @@ module.exports = async args => {
 
     } finally {
 
-        logWebSocket.close();
+        // logWebSocket.close();
 
     }
 

@@ -2,13 +2,17 @@
 
 const imageCreate = require('../action/image-create.js');
 
-exports.command = 'create';
+exports.command = 'create [--set-name name]';
 
 exports.describe = 'import and build image';
 
 exports.builder = yargs => {
 
-    return yargs;
+    return yargs
+        .option('set-name', {
+            describe: 'set name for container after create',
+            type: 'string',
+        });
 
 }
 

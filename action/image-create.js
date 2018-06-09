@@ -19,8 +19,10 @@ const verifyErrorCode = require('../lib/verify-error-code.js');
 module.exports = async args => {
 
     let jailConfig = new JailConfig(args);
+    let name = args['set-name'];
 
     let logRoot = `${args['log-protocol']}://${args['log-socket']}`;
+    let serverRoot = `${args['server-protocol']}://${args['server-socket']}`;
 
     let exclude = ignored.get();
     let cd = process.cwd();
@@ -28,13 +30,13 @@ module.exports = async args => {
     // let logWebSocket = new LogWebSocket(logRoot, jailConfig.name);
     fs.writeFileSync('.manifest', JSON.stringify(jailConfig));
 
-    await (new Promise((resolve, reject) => {
+    let body = await (new Promise((resolve, reject) => {
 
         let stream = request.post({
             headers : {
                 'content-type': 'application/x-tar',
             },
-            uri: `${args['server-protocol']}://${args['server-socket']}/containers/builder`,
+            uri: `${serverRoot}/containers/builder`,
         }, (error, res, body) => {
 
             // logWebSocket.close();
@@ -50,7 +52,7 @@ module.exports = async args => {
                 });
                 reject(httpError);
 
-            } else resolve();
+            } else resolve(body);
 
         });
 
@@ -59,5 +61,16 @@ module.exports = async args => {
         context.pipe(stream);
 
     }));
+
+    if (name) {
+
+        let containerId = JSON.parse(body).id;
+
+        await prequest.patch(`${serverRoot}/containers/list/${containerId}`, {
+            body: { name },
+            json: true,
+        });
+
+    }
 
 }

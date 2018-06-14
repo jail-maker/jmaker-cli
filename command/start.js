@@ -3,7 +3,7 @@
 const jailStart = require('../action/jail-start.js');
 const hostAdd = require('../action/host-add.js');
 
-exports.command = 'start [-n|--name name] [-o|--options ...]';
+exports.command = 'start [-n|--name name] [-r|--rules ...]';
 
 exports.describe = 'start container';
 

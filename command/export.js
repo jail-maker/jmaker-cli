@@ -12,7 +12,7 @@ exports.builder = yargs => {
         .option('o', {
             alias: 'output',
             type: 'string',
-            describe: 'path to file for saving, or - for output to stdout.',
+            describe: 'path to file for saving, or empty string for output to stdout.',
         })
         .option('n', {
             alias: 'name',
